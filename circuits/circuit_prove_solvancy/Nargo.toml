@@ -1,0 +1,6 @@
+[package]
+name = "circuit_prove_solvancy"
+type = "bin"
+authors = [""]
+
+[dependencies]

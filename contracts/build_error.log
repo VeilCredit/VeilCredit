@@ -1,0 +1,1866 @@
+Compiling 48 files with Solc 0.8.30
+Solc 0.8.30 finished in 618.79ms
+Compiler run successful with warnings:
+Warning (3420): Source file does not specify required compiler version! Consider adding "pragma solidity ^0.8.30;"
+--> test/RepaymentHelper.sol
+
+Warning (2072): Unused local variable.
+   --> src/LendingEngine.sol:116:9:
+    |
+116 |         uint256 currentTotalLiquidity = s_amountDeposited[s_borrowToken];
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Warning (5667): Unused function parameter. Remove or comment out the variable name to silence this warning.
+  --> src/interestRateModel/InterestRateModel.sol:75:9:
+   |
+75 |         address assetClass
+   |         ^^^^^^^^^^^^^^^^^^
+
+Warning (2072): Unused local variable.
+  --> test/StealthVaultTest.t.sol:94:13:
+   |
+94 |             bytes32 nullifier,
+   |             ^^^^^^^^^^^^^^^^^
+
+Warning (2072): Unused local variable.
+  --> test/StealthVaultTest.t.sol:95:13:
+   |
+95 |             bytes32 secret
+   |             ^^^^^^^^^^^^^^
+
+Warning (2018): Function state mutability can be restricted to view
+   --> src/LendingEngine.sol:226:5:
+    |
+226 |     function getLoanDetails(bytes32 nullifierHash_) external returns(Loan memory){
+    |     ^ (Relevant source part starts here and spans across multiple lines).
+
+Warning (2018): Function state mutability can be restricted to view
+   --> src/LendingEngine.sol:250:5:
+    |
+250 |     function getTotalSupply() external returns(uint256){
+    |     ^ (Relevant source part starts here and spans across multiple lines).
+
+Warning (2018): Function state mutability can be restricted to view
+   --> src/LendingEngine.sol:253:5:
+    |
+253 |     function getTotalBorrow() external returns(uint256){
+    |     ^ (Relevant source part starts here and spans across multiple lines).
+
+Warning (2018): Function state mutability can be restricted to view
+   --> src/LendingEngine.sol:256:5:
+    |
+256 |     function getTotalReserves() external returns(uint256){
+    |     ^ (Relevant source part starts here and spans across multiple lines).
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+  --> src/LendingEngine.sol:38:20
+   |
+38 |     uint256 public s_collateralTokenId;
+   |                    ^^^^^^^^^^^^^^^^^^^
+   |
+   = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+  --> src/interface/ILendingEngine.sol:18:43
+   |
+18 |     function getMinimumCollateral(uint256 borrowAmountUSDT,uint256 collateralPriceUSD) external pure returns(uint256 minimumCollater...
+   |                                           ^^^^^^^^^^^^^^^^
+   |
+   = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+  --> src/interface/ILendingEngine.sol:18:68
+   |
+18 |     function getMinimumCollateral(uint256 borrowAmountUSDT,uint256 collateralPriceUSD) external pure returns(uint256 minimumCollater...
+   |                                                                    ^^^^^^^^^^^^^^^^^^
+   |
+   = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[pascal-case-struct]: structs should use PascalCase
+   --> src/Verifiers/Verifier_CollateralDeposit.sol:432:12
+    |
+432 |     struct ZKProof {
+    |            ^^^^^^^
+    |
+    = help: https://book.getfoundry.sh/reference/forge/forge-lint#pascal-case-struct
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+  --> src/LendingEngine.sol:44:20
+   |
+44 |     address public s_borrowToken;
+   |                    ^^^^^^^^^^^^^
+   |
+   = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[screaming-snake-case-immutable]: immutables should use SCREAMING_SNAKE_CASE
+  --> src/LendingEngine.sol:47:41
+   |
+47 |     CollateralVerifier public immutable i_collateralVerifier;
+   |                                         ^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: https://book.getfoundry.sh/reference/forge/forge-lint#screaming-snake-case-immutable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+  --> src/LendingEngine.sol:48:37
+   |
+48 |     mapping(bytes32 => bool) public s_nullifierHashes;
+   |                                     ^^^^^^^^^^^^^^^^^
+   |
+   = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+  --> src/LendingEngine.sol:49:40
+   |
+49 |     mapping(address => uint256) public s_tokenDetailsofUser;
+   |                                        ^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[unused-import]: unused imports should be removed
+ --> src/tokens/LpToken.sol:7:9
+  |
+7 | import {console} from "forge-std/console.sol";
+  |         ^^^^^^^
+  |
+  = help: https://book.getfoundry.sh/reference/forge/forge-lint#unused-import
+
+note[pascal-case-struct]: structs should use PascalCase
+   --> src/Verifiers/Verifier_LoanRepayment.sol:432:12
+    |
+432 |     struct ZKProof {
+    |            ^^^^^^^
+    |
+    = help: https://book.getfoundry.sh/reference/forge/forge-lint#pascal-case-struct
+
+note[pascal-case-struct]: structs should use PascalCase
+   --> src/Verifiers/Verifier_CollateralDeposit.sol:465:8
+    |
+465 | struct ZKTranscript {
+    |        ^^^^^^^^^^^^
+    |
+    = help: https://book.getfoundry.sh/reference/forge/forge-lint#pascal-case-struct
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+  --> test/StealthVaultTest.t.sol:25:20
+   |
+25 |     uint256 public MINIMUM_COLLATERIZATION_RATIO = 132;
+   |                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+  --> test/StealthVaultTest.t.sol:26:20
+   |
+26 |     uint256 public ACTUAL_COLLATERIZATION_RATIO = 150;
+   |                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+  --> src/StealthVault.sol:23:48
+   |
+23 |     mapping(bytes32 commitment => bool) public s_commitments;
+   |                                                ^^^^^^^^^^^^^
+   |
+   = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+   --> src/Verifiers/Verifier_CollateralDeposit.sol:875:12
+    |
+875 |         Fr q_arith = wire(p, WIRE.Q_ARITH);
+    |            ^^^^^^^
+    |
+    = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+   --> src/Verifiers/Verifier_CollateralDeposit.sol:877:16
+    |
+877 |             Fr neg_half = Fr.wrap(NEG_HALF_MODULO_P);
+    |                ^^^^^^^^
+    |
+    = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[screaming-snake-case-immutable]: immutables should use SCREAMING_SNAKE_CASE
+  --> src/IncrementalMerkleTree.sol:13:29
+   |
+13 |     uint32 public immutable i_depth;
+   |                             ^^^^^^^
+   |
+   = help: https://book.getfoundry.sh/reference/forge/forge-lint#screaming-snake-case-immutable
+
+note[screaming-snake-case-immutable]: immutables should use SCREAMING_SNAKE_CASE
+  --> src/IncrementalMerkleTree.sol:14:32
+   |
+14 |     Poseidon2 public immutable i_hasher;
+   |                                ^^^^^^^^
+   |
+   = help: https://book.getfoundry.sh/reference/forge/forge-lint#screaming-snake-case-immutable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+  --> src/IncrementalMerkleTree.sol:18:19
+   |
+18 |     uint32 public s_nextLeafIndex;
+   |                   ^^^^^^^^^^^^^^^
+   |
+   = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+  --> src/IncrementalMerkleTree.sol:19:19
+   |
+19 |     uint32 public s_currentRootIndex;
+   |                   ^^^^^^^^^^^^^^^^^^
+   |
+   = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+  --> src/IncrementalMerkleTree.sol:22:39
+   |
+22 |     mapping(uint32 => bytes32) public s_cachedSubtrees;
+   |                                       ^^^^^^^^^^^^^^^^
+   |
+   = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+  --> src/IncrementalMerkleTree.sol:23:40
+   |
+23 |     mapping(uint256 => bytes32) public s_roots;
+   |                                        ^^^^^^^
+   |
+   = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+  --> src/StealthVault.sol:24:51
+   |
+24 |     mapping(bytes32 nullifierHash => bool) public s_nullifierHashes;
+   |                                                   ^^^^^^^^^^^^^^^^^
+   |
+   = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[unused-import]: unused imports should be removed
+ --> src/IncrementalMerkleTree.sol:4:9
+  |
+4 | import {console2} from "forge-std/console2.sol";
+  |         ^^^^^^^^
+  |
+  = help: https://book.getfoundry.sh/reference/forge/forge-lint#unused-import
+
+note[pascal-case-struct]: structs should use PascalCase
+   --> src/Verifiers/Verifier_LoanRepayment.sol:465:8
+    |
+465 | struct ZKTranscript {
+    |        ^^^^^^^^^^^^
+    |
+    = help: https://book.getfoundry.sh/reference/forge/forge-lint#pascal-case-struct
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+   --> src/Verifiers/Verifier_CollateralDeposit.sol:905:12
+    |
+905 |         Fr grand_product_numerator;
+    |            ^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+   --> src/Verifiers/Verifier_CollateralDeposit.sol:906:12
+    |
+906 |         Fr grand_product_denominator;
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[unsafe-cheatcode]: usage of unsafe cheatcodes that can perform dangerous operations
+  --> test/StealthVaultTest.t.sol:60:34
+   |
+60 |         bytes memory result = vm.ffi(inputs);
+   |                                  ^^^
+   |
+   = help: https://book.getfoundry.sh/reference/forge/forge-lint#unsafe-cheatcode
+
+note[screaming-snake-case-immutable]: immutables should use SCREAMING_SNAKE_CASE
+  --> src/StealthVault.sol:25:30
+   |
+25 |     address public immutable i_ethTokenAddress;
+   |                              ^^^^^^^^^^^^^^^^^
+   |
+   = help: https://book.getfoundry.sh/reference/forge/forge-lint#screaming-snake-case-immutable
+
+note[unwrapped-modifier-logic]: wrap modifier logic to reduce code size
+  --> src/interestRateModel/InterestRateModel.sol:13:14
+   |
+13 |     modifier isTokenAuthorized(address token){
+   |              ^^^^^^^^^^^^^^^^^
+   |
+   = note: wrap modifier logic to reduce code size
+           
+           - modifier isTokenAuthorized(address token){
+           -     if(address(token)==address(0) || address(token) != lendingEngine.getBorrowTokenAddress()){
+           -         revert InterestRateModel__InvalidTokenId();
+           -     }
+           -     _;
+           - }
+           + modifier isTokenAuthorized(address token) {
+           +     _isTokenAuthorized(token);
+           +     _;
+           + }
+           + 
+           + function _isTokenAuthorized(address token) internal {
+           +     if(address(token)==address(0) || address(token) != lendingEngine.getBorrowTokenAddress()){
+           +         revert InterestRateModel__InvalidTokenId();
+           +     }
+           + }
+           
+           
+   = help: https://book.getfoundry.sh/reference/forge/forge-lint#unwrapped-modifier-logic
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+  --> src/LendingEngine.sol:66:48
+   |
+66 |     mapping(bytes32 commitment => bool) public s_commitments;
+   |                                                ^^^^^^^^^^^^^
+   |
+   = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+  --> src/LendingEngine.sol:67:68
+   |
+67 |     mapping(address token => uint256 totaliquidityOfToken) private s_amountDeposited;
+   |                                                                    ^^^^^^^^^^^^^^^^^
+   |
+   = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+  --> src/LendingEngine.sol:68:48
+   |
+68 |     mapping(address token => uint256 ) private s_amountBorrowed;
+   |                                                ^^^^^^^^^^^^^^^^
+   |
+   = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+  --> src/LendingEngine.sol:70:16
+   |
+70 |         public s_borrowerIndex;
+   |                ^^^^^^^^^^^^^^^
+   |
+   = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[screaming-snake-case-immutable]: immutables should use SCREAMING_SNAKE_CASE
+  --> src/StealthVault.sol:28:40
+   |
+28 |     RepaymentVerifier public immutable i_repaymentVerifier;
+   |                                        ^^^^^^^^^^^^^^^^^^^
+   |
+   = help: https://book.getfoundry.sh/reference/forge/forge-lint#screaming-snake-case-immutable
+
+note[unsafe-cheatcode]: usage of unsafe cheatcodes that can perform dangerous operations
+  --> test/StealthVaultTest.t.sol:87:34
+   |
+87 |         bytes memory result = vm.ffi(inputs);
+   |                                  ^^^
+   |
+   = help: https://book.getfoundry.sh/reference/forge/forge-lint#unsafe-cheatcode
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+   --> src/Verifiers/Verifier_LoanRepayment.sol:875:12
+    |
+875 |         Fr q_arith = wire(p, WIRE.Q_ARITH);
+    |            ^^^^^^^
+    |
+    = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+   --> src/Verifiers/Verifier_LoanRepayment.sol:877:16
+    |
+877 |             Fr neg_half = Fr.wrap(NEG_HALF_MODULO_P);
+    |                ^^^^^^^^
+    |
+    = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+   --> test/StealthVaultTest.t.sol:127:17
+    |
+127 |         uint256 collateralValueUSD = (DEPOSIT_AMOUNT * ETH_PRICE) / 1e18;
+    |                 ^^^^^^^^^^^^^^^^^^
+    |
+    = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+   --> src/Verifiers/Verifier_CollateralDeposit.sol:951:12
+    |
+951 |         Fr write_term;
+    |            ^^^^^^^^^^
+    |
+    = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+   --> src/Verifiers/Verifier_CollateralDeposit.sol:952:12
+    |
+952 |         Fr read_term;
+    |            ^^^^^^^^^
+    |
+    = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+   --> src/Verifiers/Verifier_CollateralDeposit.sol:962:16
+    |
+962 |             Fr derived_entry_1 = wire(p, WIRE.W_L) + rp.gamma + (wire(p, WIRE.Q_R) * wire(p, WIRE.W_L_SHIFT));
+    |                ^^^^^^^^^^^^^^^
+    |
+    = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+   --> src/Verifiers/Verifier_CollateralDeposit.sol:963:16
+    |
+963 |             Fr derived_entry_2 = wire(p, WIRE.W_R) + wire(p, WIRE.Q_M) * wire(p, WIRE.W_R_SHIFT);
+    |                ^^^^^^^^^^^^^^^
+    |
+    = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+   --> src/Verifiers/Verifier_CollateralDeposit.sol:964:16
+    |
+964 |             Fr derived_entry_3 = wire(p, WIRE.W_O) + wire(p, WIRE.Q_C) * wire(p, WIRE.W_O_SHIFT);
+    |                ^^^^^^^^^^^^^^^
+    |
+    = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+   --> src/Verifiers/Verifier_CollateralDeposit.sol:970:12
+    |
+970 |         Fr read_inverse = wire(p, WIRE.LOOKUP_INVERSES) * write_term;
+    |            ^^^^^^^^^^^^
+    |
+    = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+   --> src/Verifiers/Verifier_CollateralDeposit.sol:971:12
+    |
+971 |         Fr write_inverse = wire(p, WIRE.LOOKUP_INVERSES) * read_term;
+    |            ^^^^^^^^^^^^^
+    |
+    = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[unsafe-cheatcode]: usage of unsafe cheatcodes that can perform dangerous operations
+   --> test/StealthVaultTest.t.sol:180:34
+    |
+180 |         bytes memory result = vm.ffi(inputs);
+    |                                  ^^^
+    |
+    = help: https://book.getfoundry.sh/reference/forge/forge-lint#unsafe-cheatcode
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+  --> src/LendingEngine.sol:71:71
+   |
+71 |     mapping(address user => mapping(address token => uint256 amount)) s_depositDetailsOfUser;
+   |                                                                       ^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+   --> src/Verifiers/Verifier_CollateralDeposit.sol:973:12
+    |
+973 |         Fr inverse_exists_xor = wire(p, WIRE.LOOKUP_READ_TAGS) + wire(p, WIRE.Q_LOOKUP)
+    |            ^^^^^^^^^^^^^^^^^^
+    |
+    = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+   --> src/LendingEngine.sol:182:43
+    |
+182 |     function getMinimumCollateral(uint256 borrowAmountUSDT,uint256 collateralPriceUSD) public pure returns(uint256 minimumCollatera...
+    |                                           ^^^^^^^^^^^^^^^^
+    |
+    = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+   --> src/LendingEngine.sol:182:68
+    |
+182 |     function getMinimumCollateral(uint256 borrowAmountUSDT,uint256 collateralPriceUSD) public pure returns(uint256 minimumCollatera...
+    |                                                                    ^^^^^^^^^^^^^^^^^^
+    |
+    = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[unused-import]: unused imports should be removed
+ --> test/StealthVaultTest.t.sol:3:15
+  |
+3 | import {Test, console2} from "forge-std/Test.sol";
+  |               ^^^^^^^^
+  |
+  = help: https://book.getfoundry.sh/reference/forge/forge-lint#unused-import
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+   --> src/Verifiers/Verifier_CollateralDeposit.sol:983:12
+    |
+983 |         Fr read_tag = wire(p, WIRE.LOOKUP_READ_TAGS);
+    |            ^^^^^^^^
+    |
+    = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+  --> src/StealthVault.sol:68:83
+   |
+68 |     function withdraw(address token_, uint256 amount, bytes memory proof_,bytes32 root_1,bytes32 root_2, bytes32 nullifierHash,addre...
+   |                                                                                   ^^^^^^
+   |
+   = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+  --> src/StealthVault.sol:68:98
+   |
+68 |     function withdraw(address token_, uint256 amount, bytes memory proof_,bytes32 root_1,bytes32 root_2, bytes32 nullifierHash,addre...
+   |                                                                                                  ^^^^^^
+   |
+   = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+   --> src/Verifiers/Verifier_LoanRepayment.sol:905:12
+    |
+905 |         Fr grand_product_numerator;
+    |            ^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+   --> src/Verifiers/Verifier_LoanRepayment.sol:906:12
+    |
+906 |         Fr grand_product_denominator;
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[unwrapped-modifier-logic]: wrap modifier logic to reduce code size
+  --> src/StealthVault.sol:42:14
+   |
+42 |     modifier allowListedTokens(address token) {
+   |              ^^^^^^^^^^^^^^^^^
+   |
+   = note: wrap modifier logic to reduce code size
+           
+           - modifier allowListedTokens(address token) {
+           -     if(token!=i_ethTokenAddress){
+           -         revert StealthVault__InvalidToken(token);
+           -     }
+           -     _;
+           - }
+           + modifier allowListedTokens(address token) {
+           +     _allowListedTokens(token);
+           +     _;
+           + }
+           + 
+           + function _allowListedTokens(address token) internal {
+           +     if(token!=i_ethTokenAddress){
+           +         revert StealthVault__InvalidToken(token);
+           +     }
+           + }
+           
+           
+   = help: https://book.getfoundry.sh/reference/forge/forge-lint#unwrapped-modifier-logic
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+   --> src/Verifiers/Verifier_CollateralDeposit.sol:985:12
+    |
+985 |         Fr read_tag_boolean_relation = read_tag * read_tag - read_tag;
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+   --> src/Verifiers/Verifier_CollateralDeposit.sol:997:12
+    |
+997 |         Fr minus_one = ZERO - ONE;
+    |            ^^^^^^^^^
+    |
+    = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+   --> src/Verifiers/Verifier_CollateralDeposit.sol:998:12
+    |
+998 |         Fr minus_two = ZERO - Fr.wrap(2);
+    |            ^^^^^^^^^
+    |
+    = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+   --> src/Verifiers/Verifier_CollateralDeposit.sol:999:12
+    |
+999 |         Fr minus_three = ZERO - Fr.wrap(3);
+    |            ^^^^^^^^^^^
+    |
+    = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+   --> src/Verifiers/Verifier_LoanRepayment.sol:951:12
+    |
+951 |         Fr write_term;
+    |            ^^^^^^^^^^
+    |
+    = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+   --> src/Verifiers/Verifier_LoanRepayment.sol:952:12
+    |
+952 |         Fr read_term;
+    |            ^^^^^^^^^
+    |
+    = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+   --> src/Verifiers/Verifier_LoanRepayment.sol:962:16
+    |
+962 |             Fr derived_entry_1 = wire(p, WIRE.W_L) + rp.gamma + (wire(p, WIRE.Q_R) * wire(p, WIRE.W_L_SHIFT));
+    |                ^^^^^^^^^^^^^^^
+    |
+    = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+   --> src/Verifiers/Verifier_LoanRepayment.sol:963:16
+    |
+963 |             Fr derived_entry_2 = wire(p, WIRE.W_R) + wire(p, WIRE.Q_M) * wire(p, WIRE.W_R_SHIFT);
+    |                ^^^^^^^^^^^^^^^
+    |
+    = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[unwrapped-modifier-logic]: wrap modifier logic to reduce code size
+  --> src/LendingEngine.sol:80:14
+   |
+80 |     modifier isTokenAllowed(uint256 tokenId_) {
+   |              ^^^^^^^^^^^^^^
+   |
+   = note: wrap modifier logic to reduce code size
+           
+           - modifier isTokenAllowed(uint256 tokenId_) {
+           -     if (tokenId_ != s_collateralTokenId) {
+           -         revert LendingEngine__InvalidCollateralToken();
+           -     }
+           -     _;
+           - }
+           + modifier isTokenAllowed(uint256 tokenId_) {
+           +     _isTokenAllowed(tokenId_);
+           +     _;
+           + }
+           + 
+           + function _isTokenAllowed(uint256 tokenId_) internal {
+           +     if (tokenId_ != s_collateralTokenId) {
+           +         revert LendingEngine__InvalidCollateralToken();
+           +     }
+           + }
+           
+           
+   = help: https://book.getfoundry.sh/reference/forge/forge-lint#unwrapped-modifier-logic
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_CollateralDeposit.sol:1002:12
+     |
+1002 |         Fr delta_1 = wire(p, WIRE.W_R) - wire(p, WIRE.W_L);
+     |            ^^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+   --> src/Verifiers/Verifier_LoanRepayment.sol:964:16
+    |
+964 |             Fr derived_entry_3 = wire(p, WIRE.W_O) + wire(p, WIRE.Q_C) * wire(p, WIRE.W_O_SHIFT);
+    |                ^^^^^^^^^^^^^^^
+    |
+    = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_CollateralDeposit.sol:1003:12
+     |
+1003 |         Fr delta_2 = wire(p, WIRE.W_O) - wire(p, WIRE.W_R);
+     |            ^^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_CollateralDeposit.sol:1004:12
+     |
+1004 |         Fr delta_3 = wire(p, WIRE.W_4) - wire(p, WIRE.W_O);
+     |            ^^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+   --> src/Verifiers/Verifier_LoanRepayment.sol:970:12
+    |
+970 |         Fr read_inverse = wire(p, WIRE.LOOKUP_INVERSES) * write_term;
+    |            ^^^^^^^^^^^^
+    |
+    = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+   --> src/Verifiers/Verifier_LoanRepayment.sol:971:12
+    |
+971 |         Fr write_inverse = wire(p, WIRE.LOOKUP_INVERSES) * read_term;
+    |            ^^^^^^^^^^^^^
+    |
+    = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+   --> src/Verifiers/Verifier_LoanRepayment.sol:973:12
+    |
+973 |         Fr inverse_exists_xor = wire(p, WIRE.LOOKUP_READ_TAGS) + wire(p, WIRE.Q_LOOKUP)
+    |            ^^^^^^^^^^^^^^^^^^
+    |
+    = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[unwrapped-modifier-logic]: wrap modifier logic to reduce code size
+  --> src/LendingEngine.sol:87:14
+   |
+87 |     modifier isGreaterThanZero(uint256 amount){
+   |              ^^^^^^^^^^^^^^^^^
+   |
+   = note: wrap modifier logic to reduce code size
+           
+           - modifier isGreaterThanZero(uint256 amount){
+           -     if(amount <=0 ){
+           -         revert LendingEngine__AmountShouldBeGreaterThanZero();
+           -     }
+           -     _;
+           - }
+           + modifier isGreaterThanZero(uint256 amount) {
+           +     _isGreaterThanZero(amount);
+           +     _;
+           + }
+           + 
+           + function _isGreaterThanZero(uint256 amount) internal {
+           +     if(amount <=0 ){
+           +         revert LendingEngine__AmountShouldBeGreaterThanZero();
+           +     }
+           + }
+           
+           
+   = help: https://book.getfoundry.sh/reference/forge/forge-lint#unwrapped-modifier-logic
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+   --> src/Verifiers/Verifier_LoanRepayment.sol:983:12
+    |
+983 |         Fr read_tag = wire(p, WIRE.LOOKUP_READ_TAGS);
+    |            ^^^^^^^^
+    |
+    = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+   --> src/Verifiers/Verifier_LoanRepayment.sol:985:12
+    |
+985 |         Fr read_tag_boolean_relation = read_tag * read_tag - read_tag;
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+   --> src/Verifiers/Verifier_LoanRepayment.sol:997:12
+    |
+997 |         Fr minus_one = ZERO - ONE;
+    |            ^^^^^^^^^
+    |
+    = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+   --> src/Verifiers/Verifier_LoanRepayment.sol:998:12
+    |
+998 |         Fr minus_two = ZERO - Fr.wrap(2);
+    |            ^^^^^^^^^
+    |
+    = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+   --> src/Verifiers/Verifier_LoanRepayment.sol:999:12
+    |
+999 |         Fr minus_three = ZERO - Fr.wrap(3);
+    |            ^^^^^^^^^^^
+    |
+    = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_LoanRepayment.sol:1002:12
+     |
+1002 |         Fr delta_1 = wire(p, WIRE.W_R) - wire(p, WIRE.W_L);
+     |            ^^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_LoanRepayment.sol:1003:12
+     |
+1003 |         Fr delta_2 = wire(p, WIRE.W_O) - wire(p, WIRE.W_R);
+     |            ^^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_LoanRepayment.sol:1004:12
+     |
+1004 |         Fr delta_3 = wire(p, WIRE.W_4) - wire(p, WIRE.W_O);
+     |            ^^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_LoanRepayment.sol:1005:12
+     |
+1005 |         Fr delta_4 = wire(p, WIRE.W_L_SHIFT) - wire(p, WIRE.W_4);
+     |            ^^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_CollateralDeposit.sol:1005:12
+     |
+1005 |         Fr delta_4 = wire(p, WIRE.W_L_SHIFT) - wire(p, WIRE.W_4);
+     |            ^^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_LoanRepayment.sol:1054:12
+     |
+1054 |         Fr x_1;
+     |            ^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_LoanRepayment.sol:1055:12
+     |
+1055 |         Fr y_1;
+     |            ^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_LoanRepayment.sol:1056:12
+     |
+1056 |         Fr x_2;
+     |            ^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_LoanRepayment.sol:1057:12
+     |
+1057 |         Fr y_2;
+     |            ^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_LoanRepayment.sol:1058:12
+     |
+1058 |         Fr y_3;
+     |            ^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_LoanRepayment.sol:1059:12
+     |
+1059 |         Fr x_3;
+     |            ^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_LoanRepayment.sol:1061:12
+     |
+1061 |         Fr x_double_identity;
+     |            ^^^^^^^^^^^^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_CollateralDeposit.sol:1054:12
+     |
+1054 |         Fr x_1;
+     |            ^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_CollateralDeposit.sol:1055:12
+     |
+1055 |         Fr y_1;
+     |            ^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_CollateralDeposit.sol:1056:12
+     |
+1056 |         Fr x_2;
+     |            ^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_CollateralDeposit.sol:1057:12
+     |
+1057 |         Fr y_2;
+     |            ^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_CollateralDeposit.sol:1058:12
+     |
+1058 |         Fr y_3;
+     |            ^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_CollateralDeposit.sol:1059:12
+     |
+1059 |         Fr x_3;
+     |            ^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_CollateralDeposit.sol:1061:12
+     |
+1061 |         Fr x_double_identity;
+     |            ^^^^^^^^^^^^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_LoanRepayment.sol:1078:12
+     |
+1078 |         Fr q_sign = wire(p, WIRE.Q_L);
+     |            ^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_LoanRepayment.sol:1079:12
+     |
+1079 |         Fr q_is_double = wire(p, WIRE.Q_M);
+     |            ^^^^^^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_LoanRepayment.sol:1083:12
+     |
+1083 |         Fr x_diff = (ep.x_2 - ep.x_1);
+     |            ^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_LoanRepayment.sol:1084:12
+     |
+1084 |         Fr y1_sqr = (ep.y_1 * ep.y_1);
+     |            ^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_LoanRepayment.sol:1089:16
+     |
+1089 |             Fr y2_sqr = (ep.y_2 * ep.y_2);
+     |                ^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_LoanRepayment.sol:1091:16
+     |
+1091 |             Fr x_add_identity = (ep.x_3 + ep.x_2 + ep.x_1);
+     |                ^^^^^^^^^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_LoanRepayment.sol:1101:16
+     |
+1101 |             Fr y1_plus_y3 = ep.y_1 + ep.y_3;
+     |                ^^^^^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_LoanRepayment.sol:1102:16
+     |
+1102 |             Fr y_diff = ep.y_2 * q_sign - ep.y_1;
+     |                ^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_LoanRepayment.sol:1103:16
+     |
+1103 |             Fr y_add_identity = y1_plus_y3 * x_diff + (ep.x_3 - ep.x_1) * y_diff;
+     |                ^^^^^^^^^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_LoanRepayment.sol:1111:16
+     |
+1111 |             Fr x_pow_4 = (y1_sqr + GRUMPKIN_CURVE_B_PARAMETER_NEGATED) * ep.x_1;
+     |                ^^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_LoanRepayment.sol:1112:16
+     |
+1112 |             Fr y1_sqr_mul_4 = y1_sqr + y1_sqr;
+     |                ^^^^^^^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_LoanRepayment.sol:1114:16
+     |
+1114 |             Fr x1_pow_4_mul_9 = x_pow_4 * Fr.wrap(9);
+     |                ^^^^^^^^^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_LoanRepayment.sol:1126:16
+     |
+1126 |             Fr x1_sqr_mul_3 = (ep.x_1 + ep.x_1 + ep.x_1) * ep.x_1;
+     |                ^^^^^^^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_LoanRepayment.sol:1127:16
+     |
+1127 |             Fr y_double_identity = x1_sqr_mul_3 * (ep.x_1 - ep.x_3) - (ep.y_1 + ep.y_1) * (ep.y_1 + ep.y_3);
+     |                ^^^^^^^^^^^^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_LoanRepayment.sol:1135:12
+     |
+1135 |         Fr memory_record_check;
+     |            ^^^^^^^^^^^^^^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_LoanRepayment.sol:1136:12
+     |
+1136 |         Fr partial_record_check;
+     |            ^^^^^^^^^^^^^^^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_LoanRepayment.sol:1137:12
+     |
+1137 |         Fr next_gate_access_type;
+     |            ^^^^^^^^^^^^^^^^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_LoanRepayment.sol:1138:12
+     |
+1138 |         Fr record_delta;
+     |            ^^^^^^^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_LoanRepayment.sol:1139:12
+     |
+1139 |         Fr index_delta;
+     |            ^^^^^^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_LoanRepayment.sol:1140:12
+     |
+1140 |         Fr adjacent_values_match_if_adjacent_indices_match;
+     |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_CollateralDeposit.sol:1078:12
+     |
+1078 |         Fr q_sign = wire(p, WIRE.Q_L);
+     |            ^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_CollateralDeposit.sol:1079:12
+     |
+1079 |         Fr q_is_double = wire(p, WIRE.Q_M);
+     |            ^^^^^^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_CollateralDeposit.sol:1083:12
+     |
+1083 |         Fr x_diff = (ep.x_2 - ep.x_1);
+     |            ^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_CollateralDeposit.sol:1084:12
+     |
+1084 |         Fr y1_sqr = (ep.y_1 * ep.y_1);
+     |            ^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_CollateralDeposit.sol:1089:16
+     |
+1089 |             Fr y2_sqr = (ep.y_2 * ep.y_2);
+     |                ^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_CollateralDeposit.sol:1091:16
+     |
+1091 |             Fr x_add_identity = (ep.x_3 + ep.x_2 + ep.x_1);
+     |                ^^^^^^^^^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_CollateralDeposit.sol:1101:16
+     |
+1101 |             Fr y1_plus_y3 = ep.y_1 + ep.y_3;
+     |                ^^^^^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_CollateralDeposit.sol:1102:16
+     |
+1102 |             Fr y_diff = ep.y_2 * q_sign - ep.y_1;
+     |                ^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_CollateralDeposit.sol:1103:16
+     |
+1103 |             Fr y_add_identity = y1_plus_y3 * x_diff + (ep.x_3 - ep.x_1) * y_diff;
+     |                ^^^^^^^^^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_LoanRepayment.sol:1141:12
+     |
+1141 |         Fr adjacent_values_match_if_adjacent_indices_match_and_next_access_is_a_read_operation;
+     |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_LoanRepayment.sol:1142:12
+     |
+1142 |         Fr access_check;
+     |            ^^^^^^^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_LoanRepayment.sol:1143:12
+     |
+1143 |         Fr next_gate_access_type_is_boolean;
+     |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_LoanRepayment.sol:1144:12
+     |
+1144 |         Fr ROM_consistency_check_identity;
+     |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_LoanRepayment.sol:1145:12
+     |
+1145 |         Fr RAM_consistency_check_identity;
+     |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_LoanRepayment.sol:1146:12
+     |
+1146 |         Fr timestamp_delta;
+     |            ^^^^^^^^^^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_LoanRepayment.sol:1147:12
+     |
+1147 |         Fr RAM_timestamp_check_identity;
+     |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_LoanRepayment.sol:1148:12
+     |
+1148 |         Fr memory_identity;
+     |            ^^^^^^^^^^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_LoanRepayment.sol:1149:12
+     |
+1149 |         Fr index_is_monotonically_increasing;
+     |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_CollateralDeposit.sol:1111:16
+     |
+1111 |             Fr x_pow_4 = (y1_sqr + GRUMPKIN_CURVE_B_PARAMETER_NEGATED) * ep.x_1;
+     |                ^^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_LoanRepayment.sol:1257:12
+     |
+1257 |         Fr access_type = (wire(p, WIRE.W_4) - ap.partial_record_check); // will be 0 or 1 for honest Prover; deg 1 or 4
+     |            ^^^^^^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_LoanRepayment.sol:1267:12
+     |
+1267 |         Fr value_delta = wire(p, WIRE.W_O_SHIFT) - wire(p, WIRE.W_O);
+     |            ^^^^^^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_CollateralDeposit.sol:1112:16
+     |
+1112 |             Fr y1_sqr_mul_4 = y1_sqr + y1_sqr;
+     |                ^^^^^^^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_CollateralDeposit.sol:1114:16
+     |
+1114 |             Fr x1_pow_4_mul_9 = x_pow_4 * Fr.wrap(9);
+     |                ^^^^^^^^^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_CollateralDeposit.sol:1126:16
+     |
+1126 |             Fr x1_sqr_mul_3 = (ep.x_1 + ep.x_1 + ep.x_1) * ep.x_1;
+     |                ^^^^^^^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_CollateralDeposit.sol:1127:16
+     |
+1127 |             Fr y_double_identity = x1_sqr_mul_3 * (ep.x_1 - ep.x_3) - (ep.y_1 + ep.y_1) * (ep.y_1 + ep.y_3);
+     |                ^^^^^^^^^^^^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_CollateralDeposit.sol:1135:12
+     |
+1135 |         Fr memory_record_check;
+     |            ^^^^^^^^^^^^^^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_CollateralDeposit.sol:1136:12
+     |
+1136 |         Fr partial_record_check;
+     |            ^^^^^^^^^^^^^^^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_CollateralDeposit.sol:1137:12
+     |
+1137 |         Fr next_gate_access_type;
+     |            ^^^^^^^^^^^^^^^^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_CollateralDeposit.sol:1138:12
+     |
+1138 |         Fr record_delta;
+     |            ^^^^^^^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_CollateralDeposit.sol:1139:12
+     |
+1139 |         Fr index_delta;
+     |            ^^^^^^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_CollateralDeposit.sol:1140:12
+     |
+1140 |         Fr adjacent_values_match_if_adjacent_indices_match;
+     |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_CollateralDeposit.sol:1141:12
+     |
+1141 |         Fr adjacent_values_match_if_adjacent_indices_match_and_next_access_is_a_read_operation;
+     |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_CollateralDeposit.sol:1142:12
+     |
+1142 |         Fr access_check;
+     |            ^^^^^^^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_CollateralDeposit.sol:1143:12
+     |
+1143 |         Fr next_gate_access_type_is_boolean;
+     |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_CollateralDeposit.sol:1144:12
+     |
+1144 |         Fr ROM_consistency_check_identity;
+     |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_CollateralDeposit.sol:1145:12
+     |
+1145 |         Fr RAM_consistency_check_identity;
+     |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_CollateralDeposit.sol:1146:12
+     |
+1146 |         Fr timestamp_delta;
+     |            ^^^^^^^^^^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_CollateralDeposit.sol:1147:12
+     |
+1147 |         Fr RAM_timestamp_check_identity;
+     |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_CollateralDeposit.sol:1148:12
+     |
+1148 |         Fr memory_identity;
+     |            ^^^^^^^^^^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_CollateralDeposit.sol:1149:12
+     |
+1149 |         Fr index_is_monotonically_increasing;
+     |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_LoanRepayment.sol:1324:12
+     |
+1324 |         Fr limb_subproduct;
+     |            ^^^^^^^^^^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_LoanRepayment.sol:1325:12
+     |
+1325 |         Fr non_native_field_gate_1;
+     |            ^^^^^^^^^^^^^^^^^^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_LoanRepayment.sol:1326:12
+     |
+1326 |         Fr non_native_field_gate_2;
+     |            ^^^^^^^^^^^^^^^^^^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_LoanRepayment.sol:1327:12
+     |
+1327 |         Fr non_native_field_gate_3;
+     |            ^^^^^^^^^^^^^^^^^^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_LoanRepayment.sol:1328:12
+     |
+1328 |         Fr limb_accumulator_1;
+     |            ^^^^^^^^^^^^^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_LoanRepayment.sol:1329:12
+     |
+1329 |         Fr limb_accumulator_2;
+     |            ^^^^^^^^^^^^^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_LoanRepayment.sol:1330:12
+     |
+1330 |         Fr nnf_identity;
+     |            ^^^^^^^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_CollateralDeposit.sol:1257:12
+     |
+1257 |         Fr access_type = (wire(p, WIRE.W_4) - ap.partial_record_check); // will be 0 or 1 for honest Prover; deg 1 or 4
+     |            ^^^^^^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_CollateralDeposit.sol:1267:12
+     |
+1267 |         Fr value_delta = wire(p, WIRE.W_O_SHIFT) - wire(p, WIRE.W_O);
+     |            ^^^^^^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_LoanRepayment.sol:1371:12
+     |
+1371 |         Fr non_native_field_identity =
+     |            ^^^^^^^^^^^^^^^^^^^^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_CollateralDeposit.sol:1324:12
+     |
+1324 |         Fr limb_subproduct;
+     |            ^^^^^^^^^^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_CollateralDeposit.sol:1325:12
+     |
+1325 |         Fr non_native_field_gate_1;
+     |            ^^^^^^^^^^^^^^^^^^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_CollateralDeposit.sol:1326:12
+     |
+1326 |         Fr non_native_field_gate_2;
+     |            ^^^^^^^^^^^^^^^^^^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_CollateralDeposit.sol:1327:12
+     |
+1327 |         Fr non_native_field_gate_3;
+     |            ^^^^^^^^^^^^^^^^^^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_CollateralDeposit.sol:1328:12
+     |
+1328 |         Fr limb_accumulator_1;
+     |            ^^^^^^^^^^^^^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_CollateralDeposit.sol:1329:12
+     |
+1329 |         Fr limb_accumulator_2;
+     |            ^^^^^^^^^^^^^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_CollateralDeposit.sol:1330:12
+     |
+1330 |         Fr nnf_identity;
+     |            ^^^^^^^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_LoanRepayment.sol:1401:12
+     |
+1401 |         Fr limb_accumulator_identity = ap.limb_accumulator_1 + ap.limb_accumulator_2;
+     |            ^^^^^^^^^^^^^^^^^^^^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_CollateralDeposit.sol:1371:12
+     |
+1371 |         Fr non_native_field_identity =
+     |            ^^^^^^^^^^^^^^^^^^^^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_LoanRepayment.sol:1426:12
+     |
+1426 |         Fr q_pos_by_scaling;
+     |            ^^^^^^^^^^^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_CollateralDeposit.sol:1401:12
+     |
+1401 |         Fr limb_accumulator_identity = ap.limb_accumulator_1 + ap.limb_accumulator_2;
+     |            ^^^^^^^^^^^^^^^^^^^^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_LoanRepayment.sol:1476:12
+     |
+1476 |         Fr u_sum;
+     |            ^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_LoanRepayment.sol:1482:12
+     |
+1482 |         Fr q_pos_by_scaling;
+     |            ^^^^^^^^^^^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_CollateralDeposit.sol:1426:12
+     |
+1426 |         Fr q_pos_by_scaling;
+     |            ^^^^^^^^^^^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_LoanRepayment.sol:1492:22
+     |
+1492 |         Fr[4] memory INTERNAL_MATRIX_DIAGONAL = [
+     |                      ^^^^^^^^^^^^^^^^^^^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_CollateralDeposit.sol:1476:12
+     |
+1476 |         Fr u_sum;
+     |            ^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_CollateralDeposit.sol:1482:12
+     |
+1482 |         Fr q_pos_by_scaling;
+     |            ^^^^^^^^^^^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_CollateralDeposit.sol:1492:22
+     |
+1492 |         Fr[4] memory INTERNAL_MATRIX_DIAGONAL = [
+     |                      ^^^^^^^^^^^^^^^^^^^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[screaming-snake-case-immutable]: immutables should use SCREAMING_SNAKE_CASE
+    --> src/Verifiers/Verifier_LoanRepayment.sol:1875:23
+     |
+1875 |     uint256 immutable $N;
+     |                       ^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#screaming-snake-case-immutable
+
+note[screaming-snake-case-immutable]: immutables should use SCREAMING_SNAKE_CASE
+    --> src/Verifiers/Verifier_LoanRepayment.sol:1876:23
+     |
+1876 |     uint256 immutable $LOG_N;
+     |                       ^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#screaming-snake-case-immutable
+
+note[screaming-snake-case-immutable]: immutables should use SCREAMING_SNAKE_CASE
+    --> src/Verifiers/Verifier_LoanRepayment.sol:1877:23
+     |
+1877 |     uint256 immutable $VK_HASH;
+     |                       ^^^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#screaming-snake-case-immutable
+
+note[screaming-snake-case-immutable]: immutables should use SCREAMING_SNAKE_CASE
+    --> src/Verifiers/Verifier_LoanRepayment.sol:1878:23
+     |
+1878 |     uint256 immutable $NUM_PUBLIC_INPUTS;
+     |                       ^^^^^^^^^^^^^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#screaming-snake-case-immutable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_LoanRepayment.sol:1880:25
+     |
+1880 |     constructor(uint256 _N, uint256 _logN, uint256 _vkHash, uint256 _numPublicInputs) {
+     |                         ^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[screaming-snake-case-immutable]: immutables should use SCREAMING_SNAKE_CASE
+    --> src/Verifiers/Verifier_CollateralDeposit.sol:1875:23
+     |
+1875 |     uint256 immutable $N;
+     |                       ^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#screaming-snake-case-immutable
+
+note[screaming-snake-case-immutable]: immutables should use SCREAMING_SNAKE_CASE
+    --> src/Verifiers/Verifier_CollateralDeposit.sol:1876:23
+     |
+1876 |     uint256 immutable $LOG_N;
+     |                       ^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#screaming-snake-case-immutable
+
+note[screaming-snake-case-immutable]: immutables should use SCREAMING_SNAKE_CASE
+    --> src/Verifiers/Verifier_CollateralDeposit.sol:1877:23
+     |
+1877 |     uint256 immutable $VK_HASH;
+     |                       ^^^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#screaming-snake-case-immutable
+
+note[screaming-snake-case-immutable]: immutables should use SCREAMING_SNAKE_CASE
+    --> src/Verifiers/Verifier_CollateralDeposit.sol:1878:23
+     |
+1878 |     uint256 immutable $NUM_PUBLIC_INPUTS;
+     |                       ^^^^^^^^^^^^^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#screaming-snake-case-immutable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_CollateralDeposit.sol:1880:25
+     |
+1880 |     constructor(uint256 _N, uint256 _logN, uint256 _vkHash, uint256 _numPublicInputs) {
+     |                         ^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_LoanRepayment.sol:2053:55
+     |
+2053 |         Fr[ZK_BATCHED_RELATION_PARTIAL_LENGTH] memory BARYCENTRIC_LAGRANGE_DENOMINATORS = [
+     |                                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_LoanRepayment.sol:2092:22
+     |
+2092 |         Honk.G1Point P_0;
+     |                      ^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_LoanRepayment.sol:2093:22
+     |
+2093 |         Honk.G1Point P_1;
+     |                      ^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_CollateralDeposit.sol:2053:55
+     |
+2053 |         Fr[ZK_BATCHED_RELATION_PARTIAL_LENGTH] memory BARYCENTRIC_LAGRANGE_DENOMINATORS = [
+     |                                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_LoanRepayment.sol:2104:21
+     |
+2104 |         Fr[] memory powers_of_evaluation_challenge = CommitmentSchemeLib.computeSquares(tp.geminiR, $LOG_N);
+     |                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_CollateralDeposit.sol:2092:22
+     |
+2092 |         Honk.G1Point P_0;
+     |                      ^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_CollateralDeposit.sol:2093:22
+     |
+2093 |         Honk.G1Point P_1;
+     |                      ^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_LoanRepayment.sol:2257:18
+     |
+2257 |             bool dummy_round = i >= ($LOG_N - 1);
+     |                  ^^^^^^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_CollateralDeposit.sol:2104:21
+     |
+2104 |         Fr[] memory powers_of_evaluation_challenge = CommitmentSchemeLib.computeSquares(tp.geminiR, $LOG_N);
+     |                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_LoanRepayment.sol:2311:29
+     |
+2311 |         Honk.G1Point memory quotient_commitment = proof.kzgQuotient;
+     |                             ^^^^^^^^^^^^^^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_LoanRepayment.sol:2322:30
+     |
+2322 |         (Honk.G1Point memory P_0_other, Honk.G1Point memory P_1_other) =
+     |                              ^^^^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_LoanRepayment.sol:2322:61
+     |
+2322 |         (Honk.G1Point memory P_0_other, Honk.G1Point memory P_1_other) =
+     |                                                             ^^^^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_CollateralDeposit.sol:2257:18
+     |
+2257 |             bool dummy_round = i >= ($LOG_N - 1);
+     |                  ^^^^^^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_CollateralDeposit.sol:2311:29
+     |
+2311 |         Honk.G1Point memory quotient_commitment = proof.kzgQuotient;
+     |                             ^^^^^^^^^^^^^^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_CollateralDeposit.sol:2322:30
+     |
+2322 |         (Honk.G1Point memory P_0_other, Honk.G1Point memory P_1_other) =
+     |                              ^^^^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+note[mixed-case-variable]: mutable variables should use mixedCase
+    --> src/Verifiers/Verifier_CollateralDeposit.sol:2322:61
+     |
+2322 |         (Honk.G1Point memory P_0_other, Honk.G1Point memory P_1_other) =
+     |                                                             ^^^^^^^^^
+     |
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#mixed-case-variable
+
+warning[unsafe-typecast]: typecasts that can truncate values should be checked
+    --> src/Verifiers/Verifier_LoanRepayment.sol:1623:32
+     |
+1623 |     scalar = FrLib.fromBytes32(bytes32(proofSection));
+     |                                ^^^^^^^^^^^^^^^^^^^^^
+     |
+     = note: Consider disabling this lint if you're certain the cast is safe:
+             
+             // casting to 'bytes32' is safe because [explain why]
+             // forge-lint: disable-next-line(unsafe-typecast)
+             
+             
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#unsafe-typecast
+
+warning[unsafe-typecast]: typecasts that can truncate values should be checked
+    --> src/Verifiers/Verifier_CollateralDeposit.sol:1623:32
+     |
+1623 |     scalar = FrLib.fromBytes32(bytes32(proofSection));
+     |                                ^^^^^^^^^^^^^^^^^^^^^
+     |
+     = note: Consider disabling this lint if you're certain the cast is safe:
+             
+             // casting to 'bytes32' is safe because [explain why]
+             // forge-lint: disable-next-line(unsafe-typecast)
+             
+             
+     = help: https://book.getfoundry.sh/reference/forge/forge-lint#unsafe-typecast
+
