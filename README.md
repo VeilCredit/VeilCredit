@@ -48,6 +48,122 @@ All actions remain unlinkable on-chain.
 
 ## 🔄 Protocol Flow
 
+Veil Credit is a **privacy-preserving, proof-native lending protocol** where the blockchain never learns who you are, how much collateral you deposited, or your position size.
+All lending actions are enforced **solely through cryptographic proofs**.
+
+### Overview
+
+> **The full lending lifecycle, enforced by proofs — not disclosure**
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor U as User
+    participant LE as Veil Credit Protocol
+    participant VT as Vault
+    participant MT as Commitment Trees
+
+    U->>VT: Deposit collateral (commitment only)
+    VT->>MT: Store deposit commitment
+
+    U->>LE: Submit solvency proof
+    LE->>LE: Verify proof (no identity / no balances)
+    LE-->>U: Grant loan
+
+    U->>LE: Periodic solvency proof
+    LE->>LE: Enforce health or liquidation
+
+    U->>LE: Repay loan (full only)
+    LE->>MT: Store repayment commitment
+
+    U->>VT: Submit withdrawal proof
+    VT-->>U: Release collateral
+```
+
+**Key takeaway**
+
+* No balances on-chain
+* No identities revealed
+* Proofs are the only source of truth
+
+### Deposit & Borrow Flow
+
+> **Private collateral deposit and proof-based borrowing**
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor U as User
+    participant LS as Local Storage
+    participant B as Prover / Backend
+    participant VT as Vault
+    participant MT as Deposit Merkle Tree
+    participant LE as Lending Engine
+
+    U->>B: Request deposit commitment
+    B->>LS: Store secret / nullifier
+    B-->>U: Return commitment C
+
+    U->>VT: Deposit collateral + C
+    VT->>MT: Insert C
+    MT-->>LE: Update deposit root
+
+    U->>B: Request loan
+    B->>LS: Read secrets
+    B->>MT: Fetch deposit witness
+    B-->>U: Generate solvency proof π
+
+    U->>LE: Submit π + borrow request
+    LE->>LE: Verify π (ownership + solvency)
+    LE-->>U: Issue loan
+```
+
+**What this enforces**
+
+* Collateral amount is never revealed
+* Ownership is proven cryptographically
+* Lending rules are enforced without disclosure
+
+### Solvency, Repayment & Withdrawal
+
+> **Ongoing solvency enforcement and private collateral recovery**
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor U as User
+    participant B as Prover
+    participant LE as Lending Engine
+    participant MT as Repayment Merkle Tree
+    participant VT as Vault
+    participant K as Keeper
+
+    loop Periodic Check
+        U->>B: Generate solvency proof
+        B-->>U: Return proof
+        U->>LE: Submit proof
+        LE->>LE: Verify health
+        alt Proof missing / invalid
+            K->>LE: Trigger liquidation
+            LE->>VT: Liquidate minimum collateral
+        end
+    end
+
+    U->>LE: Repay full loan
+    LE->>MT: Insert repayment commitment
+
+    U->>B: Generate withdrawal proof
+    B-->>U: Return proof
+    U->>VT: Submit withdrawal proof
+    VT-->>U: Release collateral
+```
+
+**Design choices**
+
+* No partial repayments (simpler state, stronger privacy)
+* Collateral withdrawal requires proof of full repayment
+* Keepers enforce liveness, not visibility
+
 ### 1️⃣ Private Deposit
 
 - User deposits funds into a **Vault** owned by the Lending Engine  
