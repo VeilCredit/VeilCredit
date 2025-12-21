@@ -8,7 +8,7 @@ import {RepaymentHonkVerifier} from "../test/RepaymentHonkVerifier.sol";
 import {HelperConfig} from "./HelperConfig.sol";
 import {LpToken} from "../src/tokens/LpToken.sol";
 import {ERC20Mock} from "lib/openzeppelin-contracts/contracts/mocks/token/ERC20Mock.sol";
-
+import {PriceSnapShot} from "../src/PriceSnapshot.sol";
 contract DeployLendingEngine is Script{
     function run() public {
         uint256 WETH_TOKEN_ID = 0;
@@ -24,6 +24,10 @@ contract DeployLendingEngine is Script{
         vm.startBroadcast(deployerKey);
         ERC20Mock usdt = new ERC20Mock();
         LpToken lpToken = new LpToken();
+        PriceSnapShot priceSnapShot = new PriceSnapShot(
+            wethPriceFeedAddress,
+            posiedon2
+        );
         address user = 0x70997970C51812dc3A010C7d01b50e0d17dc79C8;
         CollateralHonkVerifier collateralHonkVerifier = new CollateralHonkVerifier();
         HealthHonkVerifier healthHonkVerifier = new HealthHonkVerifier();
@@ -38,6 +42,7 @@ contract DeployLendingEngine is Script{
         ERC20Mock(address(weth)).mint(user, 1e18 * 10);
 
         LendingEngine lendingEngine = new LendingEngine(
+            address(priceSnapShot),
             address(usdt),
             address(lpToken),
             address(collateralHonkVerifier),

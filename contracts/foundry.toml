@@ -7,7 +7,7 @@ via_ir = true
 optimizer = true
 optimizer_runs = 1
 evm_version = "shanghai"
-
+ffi=true
 [profile.default.optimizer_details]
 peephole = false
 inliner = false

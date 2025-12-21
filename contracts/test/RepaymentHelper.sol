@@ -33,7 +33,7 @@ contract RepaymentProofHelper is Test {
         RepaymentProofParams memory params,
         bytes32[] memory leavesDeposit,
         bytes32[] memory leavesRepayment
-    ) private view returns(string[] memory) {
+    ) private pure returns(string[] memory) {
         // +1 for "--split" separator
         uint256 totalSize = 15 + leavesDeposit.length + 1 + leavesRepayment.length;
         string[] memory inputs = new string[](totalSize);
@@ -51,7 +51,7 @@ contract RepaymentProofHelper is Test {
         inputs[2] = "js-scripts/generateRepaymentProof.ts";
     }
 
-    function _setParams(string[] memory inputs, RepaymentProofParams memory p) private view {
+    function _setParams(string[] memory inputs, RepaymentProofParams memory p) private pure {
         // ✅ Ordered to match TS argv exactly
         inputs[3]  = vm.toString(p.nullifierDeposit);
         inputs[4]  = vm.toString(p.secretDeposit);
@@ -71,7 +71,7 @@ contract RepaymentProofHelper is Test {
         string[] memory inputs,
         bytes32[] memory leavesDeposit,
         bytes32[] memory leavesRepayment
-    ) private view {
+    ) private pure {
         uint256 offset = 15;
 
         // Deposit leaves

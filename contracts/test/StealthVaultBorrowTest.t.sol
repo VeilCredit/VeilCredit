@@ -7,7 +7,8 @@ import {LendingEngine} from "../src/LendingEngine.sol";
 import {LpToken} from "../src/tokens/LpToken.sol";
 import {CollateralHonkVerifier, HealthHonkVerifier} from "./CollateralHonkVerifier.sol";
 import {IVerifier} from "../src/interface/IVerifier.sol";
-
+import {MockV3Aggregator} from "./mocks/MockV3Aggregator.sol";
+import {PriceSnapShot} from "../src/PriceSnapShot.sol";
 contract StealthVaultTest is Test {
     StealthVault stealthVault;
     Poseidon2 posiedon2;
@@ -25,6 +26,7 @@ contract StealthVaultTest is Test {
     uint256 public MINIMUM_COLLATERIZATION_RATIO = 132;
     uint256 public ACTUAL_COLLATERIZATION_RATIO = 150;
     uint256 public constant LIQUIDATION_THRESHOLD = 80;
+    MockV3Aggregator oracle;
 
     function setUp() public {
         collateralVerifier = IVerifier(address(new CollateralHonkVerifier()));
@@ -34,6 +36,7 @@ contract StealthVaultTest is Test {
         usdt = new ERC20Mock();
         ERC20Mock(address(weth)).mint(user, DEPOSIT_AMOUNT * 10);
         lpToken = new LpToken();
+        oracle = new MockV3Aggregator(8, int256(ETH_PRICE * 1e8));
         stealthVault = new StealthVault(
             address(weth),
             16,
@@ -42,6 +45,7 @@ contract StealthVaultTest is Test {
             address(weth)
         );
         lendingEngine = new LendingEngine(
+            address(oracle),
             address(usdt),
             address(lpToken),
             address(collateralVerifier),
@@ -79,7 +83,7 @@ contract StealthVaultTest is Test {
         DepositProofParams memory depositProofParams,
         bytes32[] memory leaves
     ) internal returns (bytes memory proof, bytes32[] memory publicInputs) {
-        string[] memory inputs = new string[](12 + leaves.length);
+        string[] memory inputs = new string[](16 + leaves.length);
         inputs[0] = "npx";
         inputs[1] = "tsx";
         inputs[2] = "js-scripts/generateProof.ts";
@@ -96,8 +100,13 @@ contract StealthVaultTest is Test {
             depositProofParams.actualCollateralizationRatio
         );
         inputs[11] = vm.toString(depositProofParams.collateralAmount);
+        inputs[12] = vm.toString(depositProofParams.epochCommitment);
+        inputs[13] = vm.toString(depositProofParams.epoch);
+        inputs[14] = vm.toString(depositProofParams.roundId);
+        inputs[15] = vm.toString(depositProofParams.price);
+
         for (uint256 i = 0; i < leaves.length; i++) {
-            inputs[12 + i] = vm.toString(leaves[i]);
+            inputs[16 + i] = vm.toString(leaves[i]);
         }
         bytes memory result = vm.ffi(inputs);
         (proof, publicInputs) = abi.decode(result, (bytes, bytes32[]));
@@ -128,6 +137,8 @@ contract StealthVaultTest is Test {
         stealthVault.deposit(address(weth), DEPOSIT_AMOUNT, commitment);
         vm.stopPrank();
 
+        lendingEngine.callPerformUpKeep();
+
         // 3) Setup Merkle tree leaf
         bytes32[] memory leaves = new bytes32[](1);
         leaves[0] = commitment;
@@ -147,6 +158,11 @@ contract StealthVaultTest is Test {
         // Use maxBorrow for test
         uint256 borrowAmount = maxBorrow;
 
+        uint256 currentEpoch = lendingEngine.getCurrentEpoch();
+        console2.log("Current Epoch:", currentEpoch);
+        PriceSnapShot.SnapShot memory snapshot = lendingEngine.getCurrentSnapShot();
+        
+
         DepositProofParams memory params = DepositProofParams({
             nullifierDeposit: nullifier,
             secretDeposit: secret,
@@ -156,7 +172,11 @@ contract StealthVaultTest is Test {
             recipient: user,
             minCollateralizationRatio: MINIMUM_COLLATERIZATION_RATIO,
             actualCollateralizationRatio: ACTUAL_COLLATERIZATION_RATIO,
-            collateralAmount: DEPOSIT_AMOUNT
+            collateralAmount: DEPOSIT_AMOUNT,
+            epochCommitment: snapshot.commitment,
+            epoch: currentEpoch,
+            roundId: snapshot.roundId,
+            price: snapshot.price
         });
 
         // 4) Generate the proof
@@ -180,7 +200,7 @@ contract StealthVaultTest is Test {
         );
 
         // 6) Validate user1 received the borrowed USDT
-        uint256 userBalance = ERC20Mock(usdt).balanceOf(user1);
+        uint256 userBalance = ERC20Mock(usdt).balanceOf(user);
 
         assertEq(userBalance, borrowAmount, "Borrowed amount mismatch");
     }
@@ -195,6 +215,10 @@ contract StealthVaultTest is Test {
         uint256 minCollateralizationRatio;
         uint256 actualCollateralizationRatio;
         uint256 collateralAmount;
+        bytes32 epochCommitment;
+        uint256 epoch;
+        uint64 roundId;
+        uint256 price;
     }
 
     // ========== Helper Functions ==========
@@ -214,7 +238,11 @@ contract StealthVaultTest is Test {
     function _executeBorrow(
         bytes32 commitmentDeposit,
         bytes32 nullifierDeposit,
-        bytes32 secretDeposit
+        bytes32 secretDeposit,
+        bytes32 epochCommitment,
+        uint256 epoch,
+        uint64 roundId, 
+        uint256 price
     ) private returns (uint256 borrowAmount, bytes32[] memory publicInputs) {
         // Setup Merkle tree
         bytes32[] memory leavesDeposit = new bytes32[](1);
@@ -229,6 +257,10 @@ contract StealthVaultTest is Test {
             nullifierDeposit,
             secretDeposit,
             borrowAmount,
+            epochCommitment,   
+            epoch,
+            roundId,
+            price,
             leavesDeposit
         );
 
@@ -255,6 +287,10 @@ contract StealthVaultTest is Test {
         bytes32 nullifierDeposit,
         bytes32 secretDeposit,
         uint256 borrowAmount,
+        bytes32 epochCommitment,
+        uint256 epoch,
+        uint64 roundId,
+        uint256 price,
         bytes32[] memory leaves
     ) private returns (bytes memory proof, bytes32[] memory publicInputs) {
         DepositProofParams memory depositParams = DepositProofParams({
@@ -266,7 +302,11 @@ contract StealthVaultTest is Test {
             recipient: user,
             minCollateralizationRatio: MINIMUM_COLLATERIZATION_RATIO,
             actualCollateralizationRatio: ACTUAL_COLLATERIZATION_RATIO,
-            collateralAmount: DEPOSIT_AMOUNT
+            collateralAmount: DEPOSIT_AMOUNT,
+            epochCommitment: epochCommitment,
+            epoch: epoch,
+            roundId: roundId,
+            price: price
         });
 
         return _getProof(depositParams, leaves);
@@ -280,13 +320,17 @@ contract StealthVaultTest is Test {
         uint256 liquidationThreshold;
         uint256 tokenId;
         uint256 collateralAmount;
+        bytes32 epochCommitment;
+        uint256 epoch;
+        uint64 roundId;
+        uint256 price;
     }
 
     function _getHealthProof(
         HealthProofParams memory healthProofParams,
         bytes32[] memory leaves
     ) internal returns(bytes memory proof, bytes32[] memory publicInputs) {
-        string[] memory inputs = new string[](10 + leaves.length);
+        string[] memory inputs = new string[](14 + leaves.length);
         inputs[0] = "npx";
         inputs[1] = "tsx";
         inputs[2] = "js-scripts/generateHealthProof.ts";
@@ -297,8 +341,12 @@ contract StealthVaultTest is Test {
         inputs[7] = vm.toString(healthProofParams.tokenId);
         inputs[8] = vm.toString(healthProofParams.liquidationThreshold);
         inputs[9] = vm.toString(healthProofParams.collateralAmount);
+        inputs[10] = vm.toString(healthProofParams.epochCommitment);
+        inputs[11] = vm.toString(healthProofParams.epoch);
+        inputs[12] = vm.toString(healthProofParams.roundId);
+        inputs[13] = vm.toString(healthProofParams.price);
         for (uint256 i = 0; i < leaves.length; i++) {
-            inputs[10 + i] = vm.toString(leaves[i]);
+            inputs[14 + i] = vm.toString(leaves[i]);
         }
         bytes memory result = vm.ffi(inputs);
         (proof, publicInputs) = abi.decode(result, (bytes, bytes32[]));
@@ -316,6 +364,8 @@ contract StealthVaultTest is Test {
         ERC20Mock(weth).approve(address(stealthVault), DEPOSIT_AMOUNT);
         stealthVault.deposit(address(weth), DEPOSIT_AMOUNT, commitment);
         vm.stopPrank();
+
+        lendingEngine.callPerformUpKeep();
 
         // 3) Setup Merkle tree leaf
         bytes32[] memory leaves = new bytes32[](1);
@@ -335,6 +385,8 @@ contract StealthVaultTest is Test {
 
         // Use maxBorrow for test
         uint256 borrowAmount = maxBorrow;
+        uint256 currentEpoch = lendingEngine.getCurrentEpoch();
+        PriceSnapShot.SnapShot memory snapshot = lendingEngine.getCurrentSnapShot();
 
         DepositProofParams memory params = DepositProofParams({
             nullifierDeposit: nullifier,
@@ -345,7 +397,11 @@ contract StealthVaultTest is Test {
             recipient: user,
             minCollateralizationRatio: MINIMUM_COLLATERIZATION_RATIO,
             actualCollateralizationRatio: ACTUAL_COLLATERIZATION_RATIO,
-            collateralAmount: DEPOSIT_AMOUNT
+            collateralAmount: DEPOSIT_AMOUNT,
+            epochCommitment: snapshot.commitment,
+            epoch: currentEpoch,
+            roundId: snapshot.roundId,
+            price: snapshot.price
         });
 
         // 4) Generate the proof
@@ -369,6 +425,10 @@ contract StealthVaultTest is Test {
         );
 
         vm.warp(block.timestamp + 120 minutes);
+
+        currentEpoch = lendingEngine.getCurrentEpoch();
+        snapshot = lendingEngine.getCurrentSnapShot();
+        
         HealthProofParams memory healthProofParams = HealthProofParams({
             nullifier: nullifier,
             secret: secret,
@@ -376,7 +436,11 @@ contract StealthVaultTest is Test {
             assetPrice: ETH_PRICE,
             liquidationThreshold: LIQUIDATION_THRESHOLD,
             tokenId: WETH_TOKEN_ID,
-            collateralAmount: DEPOSIT_AMOUNT
+            collateralAmount: DEPOSIT_AMOUNT,
+            epochCommitment: snapshot.commitment,
+            epoch: currentEpoch,
+            roundId: snapshot.roundId,
+            price: snapshot.price
         });
 
         (bytes memory proof1, bytes32[] memory publicInputs1) = _getHealthProof(

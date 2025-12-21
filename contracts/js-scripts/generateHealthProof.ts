@@ -41,6 +41,10 @@ export async function generateHealthProof(
   liquidation_threshold_: bigint | number,
   tokenId_: bigint | number,
   amount_: bigint | number,
+  epochCommitment_: string,
+  epoch_: bigint | number,
+  roundId_: bigint | number,
+  price_: bigint | number,
   leaves: string[]
 ) {
   const bb = await Barretenberg.new();
@@ -62,6 +66,9 @@ export async function generateHealthProof(
     assertU128(BigInt(liquidation_threshold_), "minimum_collateralization_ratio");
     assertU64(BigInt(tokenId_), "tokenId");
     assertU128(BigInt(amount_), "amount");
+    assertU128(BigInt(epoch_), "epoch");
+    assertU64(BigInt(roundId_), "roundId");
+    assertU128(BigInt(price_), "price");
 
     // Create Fr instances
     const borrow_amount = new FrConstructor(BigInt(borrow_amount_));
@@ -69,10 +76,15 @@ export async function generateHealthProof(
     const liquidation_threshold = new FrConstructor(BigInt(liquidation_threshold_));
     const tokenId = new FrConstructor(BigInt(tokenId_));
     const amount = new FrConstructor(BigInt(amount_));
+    const epoch = new FrConstructor(BigInt(epoch_));
+    const roundId = new FrConstructor(BigInt(roundId_));
+    const price = new FrConstructor(BigInt(price_));
+
 
     const nullifierField = FrConstructor.fromString ? FrConstructor.fromString(nullifier_) : new FrConstructor(BigInt(nullifier_));
     const secretField = FrConstructor.fromString ? FrConstructor.fromString(secret_) : new FrConstructor(BigInt(secret_));
-
+    const epochCommitment = FrConstructor.fromString ? FrConstructor.fromString(epochCommitment_) : new FrConstructor(BigInt(epochCommitment_));
+    
     // Compute hashes
     const nullifierHash = await bb.poseidon2Hash([nullifierField, nullifierField]);
     
@@ -95,11 +107,15 @@ export async function generateHealthProof(
       asset_price: asset_price.toString(),
       liquidation_threshold: liquidation_threshold.toString(),
       tokenId: tokenId.toString(),
+      epoch_commitment: epochCommitment.toString(),
+      epoch: epoch.toString(),
       nullifier: nullifierField.toString(),
       secret: secretField.toString(),
       merkle_proof: merkleProof.pathElements.map((i) => i.toString()),
       is_even: merkleProof.pathIndices.map((i) => i % 2 === 0),
       amount: amount.toString(),
+      price: price.toString(),
+      roundId: roundId.toString(),
     };
 
     // Generate witness and proof
@@ -134,7 +150,11 @@ export async function generateHealthProof(
   const tokenIdArg = process.argv[6];
   const liquidation_threshold_arg = process.argv[7];
   const collateralAmountArg = process.argv[8];
-  const leaves = process.argv.slice(9);
+  const epochCommitment = process.argv[9];
+  const epochArg = process.argv[10];
+  const roundIdArg = process.argv[11];
+  const priceArg = process.argv[12];
+  const leaves = process.argv.slice(13);
 
   // Validation
   if (!nullifier) throw new Error("nullifier argument missing");
@@ -144,6 +164,10 @@ export async function generateHealthProof(
   if (!tokenIdArg) throw new Error("tokenId argument missing");
   if (!liquidation_threshold_arg) throw new Error("minimum collateralization ratio argument missing");
   if (!collateralAmountArg) throw new Error("collateralAmount argument missing");
+  if(!epochCommitment) throw new Error("epochCommitment argument missing");
+  if(!epochArg) throw new Error("epoch argument missing");
+  if(!roundIdArg) throw new Error("roundId argument missing");
+  if(!priceArg) throw new Error("price argument missing");
   if (!leaves || leaves.length === 0) throw new Error("leaves argument missing");
 
   const borrowAmount = BigInt(borrowAmountArg);
@@ -151,6 +175,9 @@ export async function generateHealthProof(
   const assetPrice = BigInt(assetPriceArg);
   const liquidationThreshold = BigInt(liquidation_threshold_arg);
   const collateralAmount = BigInt(collateralAmountArg);
+  const epoch = BigInt(epochArg);
+  const roundId = BigInt(roundIdArg);
+  const price = BigInt(priceArg);
 
   const result = await generateHealthProof(
     nullifier,
@@ -160,6 +187,10 @@ export async function generateHealthProof(
     liquidationThreshold,
     tokenId,
     collateralAmount,
+    epochCommitment,
+    epoch,
+    roundId,
+    price,
     leaves
   );
 
