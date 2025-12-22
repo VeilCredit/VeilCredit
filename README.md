@@ -46,123 +46,126 @@ All actions remain unlinkable on-chain.
 
 ---
 
-## 🔄 Protocol Flow
+## Protocol Flow
 
-Veil Credit is a **privacy-preserving, proof-native lending protocol** where the blockchain never learns who you are, how much collateral you deposited, or your position size.
-All lending actions are enforced **solely through cryptographic proofs**.
+### Overall Flow
 
-### Overview
+High-Level Protocol Lifecycle
 
-> **The full lending lifecycle, enforced by proofs — not disclosure**
+> A single view of how Veil Credit enforces the entire lending lifecycle using proofs
 
 ```mermaid
 sequenceDiagram
     autonumber
-    actor U as User
-    participant LE as Veil Credit Protocol
-    participant VT as Vault
-    participant MT as Commitment Trees
+    actor User
+    participant Vault
+    participant LendingEngine
+    participant DepositTree
+    participant RepaymentTree
 
-    U->>VT: Deposit collateral (commitment only)
-    VT->>MT: Store deposit commitment
+    User->>Vault: Deposit collateral with commitment
+    Vault->>DepositTree: Insert deposit commitment
 
-    U->>LE: Submit solvency proof
-    LE->>LE: Verify proof (no identity / no balances)
-    LE-->>U: Grant loan
+    User->>LendingEngine: Submit solvency proof
+    LendingEngine->>DepositTree: Verify commitment inclusion
+    LendingEngine-->>User: Grant loan
 
-    U->>LE: Periodic solvency proof
-    LE->>LE: Enforce health or liquidation
+    loop Every interval T
+        User->>LendingEngine: Submit periodic solvency proof
+        LendingEngine-->>LendingEngine: Verify health
+    end
 
-    U->>LE: Repay loan (full only)
-    LE->>MT: Store repayment commitment
+    User->>LendingEngine: Repay loan (full only)
+    LendingEngine->>RepaymentTree: Insert repayment commitment
 
-    U->>VT: Submit withdrawal proof
-    VT-->>U: Release collateral
+    User->>Vault: Submit withdrawal proof
+    Vault-->>User: Release collateral
 ```
 
-**Key takeaway**
+---
 
-* No balances on-chain
-* No identities revealed
-* Proofs are the only source of truth
+### Deposit and Borrow Flow
 
-### Deposit & Borrow Flow
+Private Collateral Deposit and Loan Issuance
 
-> **Private collateral deposit and proof-based borrowing**
+> How collateral is deposited and loans are issued without disclosure
 
 ```mermaid
 sequenceDiagram
     autonumber
-    actor U as User
-    participant LS as Local Storage
-    participant B as Prover / Backend
-    participant VT as Vault
-    participant MT as Deposit Merkle Tree
-    participant LE as Lending Engine
+    actor User
+    participant LocalStorage
+    participant Prover
+    participant Vault
+    participant DepositTree
+    participant LendingEngine
 
-    U->>B: Request deposit commitment
-    B->>LS: Store secret / nullifier
-    B-->>U: Return commitment C
+    User->>LocalStorage: Generate secret and nullifier
+    LocalStorage-->>User: Store secret and nullifier
 
-    U->>VT: Deposit collateral + C
-    VT->>MT: Insert C
-    MT-->>LE: Update deposit root
+    User->>Prover: Generate deposit commitment
+    Prover-->>User: Commitment C
 
-    U->>B: Request loan
-    B->>LS: Read secrets
-    B->>MT: Fetch deposit witness
-    B-->>U: Generate solvency proof π
+    User->>Vault: Deposit collateral and commitment C
+    Vault->>DepositTree: Insert C
+    DepositTree-->>LendingEngine: Update deposit root
 
-    U->>LE: Submit π + borrow request
-    LE->>LE: Verify π (ownership + solvency)
-    LE-->>U: Issue loan
+    User->>Prover: Generate solvency proof
+    Prover->>DepositTree: Fetch commitment witness
+    Prover-->>User: Solvency proof π
+
+    User->>LendingEngine: Submit proof π
+    LendingEngine-->>LendingEngine: Verify proof and price
+    LendingEngine-->>User: Issue loan
 ```
 
-**What this enforces**
+---
 
-* Collateral amount is never revealed
-* Ownership is proven cryptographically
-* Lending rules are enforced without disclosure
+### Solvency, Repayment, and Withdrawal Flow
 
-### Solvency, Repayment & Withdrawal
+Ongoing Health Enforcement and Private Collateral Recovery
 
-> **Ongoing solvency enforcement and private collateral recovery**
+> How Veil Credit enforces loan health, repayment, and withdrawal
 
 ```mermaid
 sequenceDiagram
     autonumber
-    actor U as User
-    participant B as Prover
-    participant LE as Lending Engine
-    participant MT as Repayment Merkle Tree
-    participant VT as Vault
-    participant K as Keeper
+    actor User
+    participant Prover
+    participant LendingEngine
+    participant RepaymentTree
+    participant Vault
+    participant Keeper
 
-    loop Periodic Check
-        U->>B: Generate solvency proof
-        B-->>U: Return proof
-        U->>LE: Submit proof
-        LE->>LE: Verify health
-        alt Proof missing / invalid
-            K->>LE: Trigger liquidation
-            LE->>VT: Liquidate minimum collateral
+    loop Periodic health check
+        User->>Prover: Generate solvency proof
+        Prover-->>User: Proof
+        User->>LendingEngine: Submit proof
+        LendingEngine-->>LendingEngine: Verify solvency
+        alt Proof missing or invalid
+            Keeper->>LendingEngine: Trigger liquidation
+            LendingEngine->>Vault: Liquidate minimum collateral
         end
     end
 
-    U->>LE: Repay full loan
-    LE->>MT: Insert repayment commitment
+    User->>LendingEngine: Repay full loan plus interest
+    LendingEngine->>RepaymentTree: Insert repayment commitment
 
-    U->>B: Generate withdrawal proof
-    B-->>U: Return proof
-    U->>VT: Submit withdrawal proof
-    VT-->>U: Release collateral
+    User->>Prover: Generate withdrawal proof
+    Prover-->>User: Withdrawal proof
+    User->>Vault: Submit withdrawal proof
+    Vault-->>User: Release collateral
 ```
+---
 
-**Design choices**
+## Key Design Summary
 
-* No partial repayments (simpler state, stronger privacy)
-* Collateral withdrawal requires proof of full repayment
-* Keepers enforce liveness, not visibility
+* User state is represented only by commitments and proofs
+* The Lending Engine enforces rules without seeing balances or identities
+* The Vault holds collateral but understands nothing without proofs
+* Keepers provide liveness, not visibility
+
+---
 
 ### 1️⃣ Private Deposit
 
