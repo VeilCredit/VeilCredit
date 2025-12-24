@@ -1,0 +1,277 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+
+
+
+/* Base */
+html {
+  scroll-behavior: smooth;
+  font-family: 'Space Grotesk', sans-serif;
+}
+
+body {
+  background: #000000;
+  color: #ffffff;
+  overflow-x: hidden;
+}
+
+/* Consistent background for all pages */
+section {
+  background: inherit;
+}
+
+/* Scroll animations */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 107, 53, 0.05);
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, #FF6B35, #FF8E53);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(to bottom, #FF8E53, #FF6B35);
+}
+
+/* Keyframes */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInFromLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-100px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInFromRight {
+  from {
+    opacity: 0;
+    transform: translateX(100px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes gradientShift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+/* Utility classes */
+.animate-fade-up {
+  animation: fadeInUp 1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.animate-slide-left {
+  animation: slideInFromLeft 1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.animate-slide-right {
+  animation: slideInFromRight 1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.animate-gradient-shift {
+  animation: gradientShift 5s ease infinite;
+  background-size: 200% 200%;
+}
+
+/* Orange gradient theme - Refined */
+.gradient-orange {
+  background: linear-gradient(135deg, #FF6B35 0%, #FF8E53 50%, #FF9E6D 100%);
+}
+
+.text-gradient-orange {
+  background: linear-gradient(135deg, #FF6B35, #FF8E53, #FF9E6D);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  background-size: 200% 200%;
+  animation: gradientShift 5s ease infinite;
+}
+
+.glass-orange {
+  background: rgba(255, 107, 53, 0.03);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 107, 53, 0.15);
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+/* Professional subtle hover effects */
+.hover-lift {
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hover-lift:hover {
+  transform: translateY(-5px);
+}
+
+/* Selection */
+::selection {
+  background: rgba(255, 107, 53, 0.3);
+  color: white;
+}
+
+/* Smooth transitions */
+* {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ============================================================================ */
+/* REOWN APPKIT (WalletConnect v3) CUSTOMIZATION                                */
+/* ============================================================================ */
+
+/* Appkit Theme Variables - Match your orange gradient theme */
+:root {
+  /* Main Colors */
+  --w3m-accent: #FF6B35;                    /* Your primary orange */
+  --w3m-background-color: #000000;          /* Match your black background */
+  
+  /* Text & Borders */
+  --w3m-color-fg-1: #FFFFFF;                /* White text */
+  --w3m-color-fg-2: rgba(255, 255, 255, 0.7); /* Grayish text */
+  --w3m-color-fg-3: rgba(255, 107, 53, 0.6); /* Orange tint text */
+  
+  /* UI Elements */
+  --w3m-background-border-radius: 24px;     /* Rounded corners like your cards */
+  --w3m-container-border-radius: 16px;      /* Inner rounded corners */
+  --w3m-border-radius-master: 12px;         /* Global border radius */
+  
+  /* Modal */
+  --w3m-modal-background: rgba(0, 0, 0, 0.95); /* Dark overlay */
+  --w3m-modal-border-radius: 24px;          /* Match your card radius */
+  
+  /* Font */
+  --w3m-font-family: 'Space Grotesk', sans-serif; /* Your font */
+  --w3m-text-big-bold-size: 18px;
+  --w3m-text-big-bold-weight: 600;
+  
+  /* Shadows */
+  --w3m-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  --w3m-button-hover-highlight-border-radius: 12px;
+}
+
+/* Appkit Modal Customization */
+w3m-modal {
+  --w3m-background-color: #000000;
+  --w3m-background-border-radius: 24px;
+}
+
+/* Appkit Button States */
+w3m-button {
+  --w3m-accent-fill-color: #FF6B35;
+  --w3m-accent-color: #FFFFFF;
+}
+
+/* Appkit Network Button */
+w3m-network-button {
+  --w3m-background-color: rgba(255, 107, 53, 0.1);
+  --w3m-background-border-radius: 12px;
+}
+
+/* Appkit Account Button */
+w3m-account-button {
+  --w3m-background-color: rgba(255, 107, 53, 0.1);
+  --w3m-background-border-radius: 20px;
+}
+
+/* Wallet List Items */
+w3m-wallet-button {
+  --w3m-background-color: rgba(255, 255, 255, 0.05);
+  --w3m-background-border-radius: 16px;
+}
+
+w3m-wallet-button:hover {
+  --w3m-background-color: rgba(255, 107, 53, 0.15);
+}
+
+/* QR Code Container */
+w3m-qrcode {
+  --w3m-background-color: rgba(255, 255, 255, 0.05);
+  --w3m-background-border-radius: 20px;
+}
+
+/* Connection States */
+w3m-connecting-wc {
+  background: linear-gradient(135deg, rgba(255, 107, 53, 0.1), rgba(255, 107, 53, 0.05));
+}
+
+/* Mobile Responsive Adjustments */
+@media (max-width: 640px) {
+  :root {
+    --w3m-background-border-radius: 20px;
+    --w3m-modal-border-radius: 20px;
+    --w3m-container-border-radius: 12px;
+  }
+  
+  w3m-modal {
+    --w3m-background-border-radius: 20px;
+  }
+}
+
+/* Dark Theme Enhancement */
+[data-theme="dark"] w3m-modal {
+  --w3m-background-color: #000000;
+}
+
+/* Animation for wallet connection */
+@keyframes walletPulse {
+  0%, 100% { 
+    box-shadow: 0 0 0 0 rgba(255, 107, 53, 0.4);
+  }
+  50% { 
+    box-shadow: 0 0 0 10px rgba(255, 107, 53, 0);
+  }
+}
+
+.connecting {
+  animation: walletPulse 2s infinite;
+}
+
+/* Wallet Icon Customization */
+.wallet-icon-metamask {
+  background: linear-gradient(135deg, #F6851B, #FFCF70);
+}
+
+.wallet-icon-coinbase {
+  background: linear-gradient(135deg, #1652F0, #3B7CF0);
+}
+
+.wallet-icon-walletconnect {
+  background: linear-gradient(135deg, #3B99FC, #5DADE2);
+}
+
+
+.sticky-header {
+  position: sticky;
+  top: 5rem; 
+  z-index: 30;
+  backdrop-filter: blur(10px);
+  background: rgba(5, 5, 5, 0.7);
+}
