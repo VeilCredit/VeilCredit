@@ -1,0 +1,28 @@
+[profile.default]
+src = "src"
+out = "out"
+libs = ["lib"]
+solc = "0.8.24"
+via_ir = true
+optimizer = true
+optimizer_runs = 1
+evm_version = "shanghai"
+ffi=true
+[profile.default.optimizer_details]
+peephole = false
+inliner = false
+jumpdestRemover = false
+orderLiterals = false
+deduplicate = false
+cse = false
+constantOptimizer = false
+simpleCounterForLoopUncheckedIncrement = true
+yul = true
+
+[profile.default.optimizer_details.yulDetails]
+stackAllocation = true
+optimizerSteps = "dhfoDgvulfnTUtnIf[xarrscLMcCTUtTOntnfDIulLculVcul[jmul[jul]]culLul]"
+
+[rpc_endpoints]
+anvil = "http://127.0.0.1:8545"
+mantle_testnet = "https://rpc.testnet.mantle.xyz"

@@ -1,0 +1,5 @@
+Compiling 56 files with Solc 0.8.30
+Solc 0.8.30 finished in 2.89s
+Error: Compiler run failed:
+Error: Variable expr_mpos_20 is 1 too deep in the stack [ RET expr_mpos_4 expr_mpos expr_mpos_1 expr_mpos_8 expr_mpos_20 expr_mpos_19 expr_mpos_18 expr_mpos_2 expr_mpos_3 expr_mpos_6 expr_mpos_7 expr_mpos_17 expr_mpos_16 expr_mpos_15 expr_mpos_5 expr_mpos_14 expr_mpos_13 expr_mpos_12 expr_mpos_9 expr_mpos_11 expr_mpos_10 ]
+No memoryguard was present. Consider using memory-safe assembly only and annotating it via 'assembly ("memory-safe") { ... }'.
