@@ -368,15 +368,15 @@ contract LendingEngine is IncrementalMerkleTree, AutomationCompatibleInterface {
         return s_borrowerIndex[token];
     }
 
-    function getTotalSupply() external returns (uint256) {
+    function getTotalSupply() external view returns (uint256) {
         return totalSupply;
     }
 
-    function getTotalBorrow() external returns (uint256) {
+    function getTotalBorrow() external view returns (uint256) {
         return totalBorrowed;
     }
 
-    function getTotalReserves() external returns (uint256) {
+    function getTotalReserves() external view returns (uint256) {
         return totalReserves;
     }
 
