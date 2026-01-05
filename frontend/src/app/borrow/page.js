@@ -10,16 +10,16 @@ import {
   ChevronRight, AlertCircle, EyeOff
 } from 'lucide-react'
 
+// CONFIG 
 
-// CONFIG
+const LENDING_ENGINE_ADDRESS = '0xc5a5C42992dECbae36851359345FE25997F5C42d'
 
-const LENDING_ENGINE_ADDRESS =  0xc5a5C42992dECbae36851359345FE25997F5C42d
 const LENDING_ENGINE_ABI = [
-  "function requestLoan(uint256 amount, bytes calldata proof) external"
+  'function requestLoan(uint256 amount, bytes calldata proof) external'
 ]
 
-
 // COMPONENT
+
 export default function BorrowPage() {
   const router = useRouter()
 
@@ -31,20 +31,20 @@ export default function BorrowPage() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [activeStep, setActiveStep] = useState(1)
 
-  
-  // Load commitment
+  // LOAD COMMITMENT
  
   useEffect(() => {
     const storedCommitment = localStorage.getItem('commitment')
+
     if (!storedCommitment) {
       router.push('/deposit')
       return
     }
+
     setCommitment(storedCommitment)
   }, [router])
 
-
-  // Generate ZK Proof
+  // GENERATE BORROW PROOF 
 
   const handleGenerateProof = async () => {
     if (!commitment) return
@@ -53,20 +53,27 @@ export default function BorrowPage() {
       setIsGeneratingProof(true)
       setActiveStep(2)
 
-      const res = await fetch('/api/generate-proof', {
+      const res = await fetch('/api/borrow/generate-proof', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          commitment,
-          amount: ethers.parseEther(loanAmount).toString()
+          commitment,                         
+          borrowAmount: ethers.parseEther(loanAmount).toString(),
+          tokenId: 0                        
         })
       })
 
-      if (!res.ok) throw new Error('Proof generation failed')
+      if (!res.ok) {
+        throw new Error('Backend proof generation failed')
+      }
 
       const data = await res.json()
-      setProof(data.proof)
 
+      if (!data.proof) {
+        throw new Error('Invalid proof returned')
+      }
+
+      setProof(data.proof)
       setActiveStep(3)
     } catch (err) {
       console.error(err)
@@ -75,15 +82,18 @@ export default function BorrowPage() {
       setIsGeneratingProof(false)
     }
   }
-
- 
-  // Submit Loan
+  
+  // SUBMIT LOAN TX
   
   const handleSubmitLoan = async () => {
     if (!proof) return
 
     try {
       setIsSubmitting(true)
+
+      if (!window.ethereum) {
+        throw new Error('Wallet not found')
+      }
 
       const provider = new ethers.BrowserProvider(window.ethereum)
       const signer = await provider.getSigner()
@@ -109,9 +119,8 @@ export default function BorrowPage() {
       setIsSubmitting(false)
     }
   }
-
- 
-  // UI
+  
+  // UI 
   
   return (
     <div className="relative min-h-screen overflow-hidden">
@@ -133,8 +142,10 @@ export default function BorrowPage() {
         <div className="flex justify-center gap-16 mb-12">
           {['Loan', 'Proof', 'Submit'].map((label, i) => (
             <div key={label} className="flex flex-col items-center">
-              <div className={`w-12 h-12 rounded-full flex items-center justify-center
-                ${activeStep > i ? 'bg-yellow-500 text-black' : 'bg-white/10 text-gray-400'}`}>
+              <div
+                className={`w-12 h-12 rounded-full flex items-center justify-center
+                ${activeStep > i ? 'bg-yellow-500 text-black' : 'bg-white/10 text-gray-400'}`}
+              >
                 {activeStep > i ? '✓' : i + 1}
               </div>
               <span className="text-sm text-gray-400 mt-2">{label}</span>
