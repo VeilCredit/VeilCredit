@@ -2,7 +2,8 @@
 pragma solidity ^0.8.24;
 import {Poseidon2, Field} from "lib/poseidon2-evm/src/Poseidon2.sol";
 import {console2} from "forge-std/console2.sol";
-contract IncrementalMerkleTree{
+
+contract IncrementalMerkleTree {
     // errors
     error IncrementalMerkleTree__DepthZeroNotAllowed();
     error IncrementalMerkleTree__IndexOutOfBounds();
@@ -12,7 +13,6 @@ contract IncrementalMerkleTree{
     // immutable variables
     uint32 public immutable i_depth;
     Poseidon2 public immutable i_hasher;
-
 
     // state variables
     uint32 public s_nextLeafIndex;
@@ -24,10 +24,10 @@ contract IncrementalMerkleTree{
 
     // constant variables
     uint32 public constant ROOT_HISTORY_SIZE = 30;
-    uint256 public constant FIELD_SIZE = 21888242871839275222246405745257275088548364400416034343698204186575808495617;
+    uint256 public constant FIELD_SIZE =
+        21888242871839275222246405745257275088548364400416034343698204186575808495617;
 
-
-    constructor(uint32 _depth, Poseidon2 _hasher){
+    constructor(uint32 _depth, Poseidon2 _hasher) {
         i_hasher = _hasher;
         if (_depth == 0) {
             revert IncrementalMerkleTree__DepthZeroNotAllowed();
@@ -41,8 +41,7 @@ contract IncrementalMerkleTree{
         s_roots[0] = zeros(_depth - 1);
     }
 
-
-    function _insert(bytes32 _leaf) internal returns(uint32){
+    function _insert(bytes32 _leaf) internal returns (uint32) {
         uint32 _nextLeafIndex = s_nextLeafIndex;
         if (_nextLeafIndex == uint32(2 ** i_depth)) {
             revert IncrementalMerkleTree__MerkleTreeFull();
@@ -51,21 +50,20 @@ contract IncrementalMerkleTree{
         bytes32 currentHash = _leaf;
         bytes32 left;
         bytes32 right;
-        for(uint32 i=0;i<i_depth;i++){
-            if(currentIndex % 2 ==0){
+        for (uint32 i = 0; i < i_depth; i++) {
+            if (currentIndex % 2 == 0) {
                 left = currentHash;
                 right = zeros(i);
                 s_cachedSubtrees[i] = currentHash;
-            }else{
+            } else {
                 left = s_cachedSubtrees[i];
                 right = currentHash;
-            
             }
-            
+
             currentHash = Field.toBytes32(
                 i_hasher.hash_2(Field.toField(left), Field.toField(right))
             );
-            currentIndex / 2;
+            currentIndex /= 2;
         }
         uint32 newRootIndex = (s_currentRootIndex + 1) % ROOT_HISTORY_SIZE;
         s_currentRootIndex = newRootIndex;
@@ -73,6 +71,7 @@ contract IncrementalMerkleTree{
         s_nextLeafIndex = _nextLeafIndex + 1;
         return _nextLeafIndex;
     }
+
     function isKnownRoot(bytes32 _root) public view returns (bool) {
         uint32 currentRootIndex = s_currentRootIndex;
         uint32 i = s_currentRootIndex;
@@ -170,7 +169,6 @@ contract IncrementalMerkleTree{
                 bytes32(
                     0x1b272f362459073ff21522bdcb2e1d7fca9ff41cb0c8057a53b6d932dc3c18df
                 );
-        
         else revert IncrementalMerkleTree__IndexOutOfBounds();
     }
 }

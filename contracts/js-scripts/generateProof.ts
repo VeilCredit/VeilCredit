@@ -93,6 +93,7 @@ export async function generateProof(
     const nullifierHash = await bb.poseidon2Hash([nullifierField, nullifierField]);
     
     const tree = await merkleTree(leaves);
+
     
     const commitment = await bb.poseidon2Hash([
       nullifierField,
@@ -100,6 +101,7 @@ export async function generateProof(
       amount,
       tokenId,
     ]);
+
     
     const merkleProof = tree.proof(tree.getIndex(commitment.toString()));
 

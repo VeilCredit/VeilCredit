@@ -408,7 +408,7 @@ contract LendingEngine is IncrementalMerkleTree, AutomationCompatibleInterface {
         return oracle.checkUpkeep("");
     }
 
-    function callPerformUpKeep() external {
+    function callPerformUpKeep() public {
         oracle.performUpkeep("");
     }
 }

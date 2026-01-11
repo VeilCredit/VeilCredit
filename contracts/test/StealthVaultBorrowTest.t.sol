@@ -11,6 +11,7 @@ import {PriceSnapShot} from "../src/PriceSnapShot.sol";
 import {RepaymentProofHelper, RepaymentProofParams} from "./RepaymentHelper.sol";
 import {HonkVerifier as CollateralHonkVerifier} from "../Verifiers/Verifier_CollateralDeposit.sol";
 import {HonkVerifier as HealthHonkVerifier} from "../Verifiers/Verifier_LoanHealth.sol";
+
 contract StealthVaultTest is Test {
     StealthVault stealthVault;
     Poseidon2 posiedon2;
@@ -18,9 +19,9 @@ contract StealthVaultTest is Test {
     ERC20Mock usdt;
     LpToken lpToken;
     uint256 public constant WETH_TOKEN_ID = 0;
+    uint256 public constant DEPOSIT_AMOUNT = 1e18;
     address user = makeAddr("user");
     address user1 = makeAddr("user1");
-    uint256 public constant DEPOSIT_AMOUNT = 1e18;
     LendingEngine lendingEngine;
     IVerifier collateralVerifier;
     IVerifier healthVerifier;
@@ -134,6 +135,10 @@ contract StealthVaultTest is Test {
             bytes32 nullifier,
             bytes32 secret
         ) = _getCommitment();
+        console2.log("log");
+        console2.logBytes32(commitment);
+        console2.logBytes32(nullifier);
+        console2.logBytes32(secret);
 
         // 2) User deposits collateral (1 ETH)
         vm.startPrank(user);
@@ -164,8 +169,8 @@ contract StealthVaultTest is Test {
 
         uint256 currentEpoch = lendingEngine.getCurrentEpoch();
         console2.log("Current Epoch:", currentEpoch);
-        PriceSnapShot.SnapShot memory snapshot = lendingEngine.getCurrentSnapShot();
-        
+        PriceSnapShot.SnapShot memory snapshot = lendingEngine
+            .getCurrentSnapShot();
 
         DepositProofParams memory params = DepositProofParams({
             nullifierDeposit: nullifier,
@@ -245,7 +250,7 @@ contract StealthVaultTest is Test {
         bytes32 secretDeposit,
         bytes32 epochCommitment,
         uint256 epoch,
-        uint64 roundId, 
+        uint64 roundId,
         uint256 price
     ) private returns (uint256 borrowAmount, bytes32[] memory publicInputs) {
         // Setup Merkle tree
@@ -261,7 +266,7 @@ contract StealthVaultTest is Test {
             nullifierDeposit,
             secretDeposit,
             borrowAmount,
-            epochCommitment,   
+            epochCommitment,
             epoch,
             roundId,
             price,
@@ -333,7 +338,7 @@ contract StealthVaultTest is Test {
     function _getHealthProof(
         HealthProofParams memory healthProofParams,
         bytes32[] memory leaves
-    ) internal returns(bytes memory proof, bytes32[] memory publicInputs) {
+    ) internal returns (bytes memory proof, bytes32[] memory publicInputs) {
         string[] memory inputs = new string[](14 + leaves.length);
         inputs[0] = "npx";
         inputs[1] = "tsx";
@@ -390,7 +395,8 @@ contract StealthVaultTest is Test {
         // Use maxBorrow for test
         uint256 borrowAmount = maxBorrow;
         uint256 currentEpoch = lendingEngine.getCurrentEpoch();
-        PriceSnapShot.SnapShot memory snapshot = lendingEngine.getCurrentSnapShot();
+        PriceSnapShot.SnapShot memory snapshot = lendingEngine
+            .getCurrentSnapShot();
 
         DepositProofParams memory params = DepositProofParams({
             nullifierDeposit: nullifier,
@@ -432,7 +438,7 @@ contract StealthVaultTest is Test {
 
         currentEpoch = lendingEngine.getCurrentEpoch();
         snapshot = lendingEngine.getCurrentSnapShot();
-        
+
         HealthProofParams memory healthProofParams = HealthProofParams({
             nullifier: nullifier,
             secret: secret,
@@ -467,9 +473,4 @@ contract StealthVaultTest is Test {
 
         assertEq(upkeepNeeded2, true);
     }
-
-    
-
-      
-
 }

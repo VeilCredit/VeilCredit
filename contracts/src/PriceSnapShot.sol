@@ -1,10 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
 import {AggregatorV3Interface} from "../lib/chainlink-brownie-contracts/contracts/src/v0.8/shared/interfaces/AggregatorV3Interface.sol";
-import {
-    AutomationCompatibleInterface
-} from "../lib/chainlink-brownie-contracts/contracts/src/v0.8/automation/interfaces/AutomationCompatibleInterface.sol";
-import {Poseidon2,Field} from "./IncrementalMerkleTree.sol";
+import {AutomationCompatibleInterface} from "../lib/chainlink-brownie-contracts/contracts/src/v0.8/automation/interfaces/AutomationCompatibleInterface.sol";
+import {Poseidon2, Field} from "./IncrementalMerkleTree.sol";
+import {console} from "forge-std/console.sol";
 
 contract PriceSnapShot is AutomationCompatibleInterface {
     AggregatorV3Interface public feed;
@@ -16,7 +15,7 @@ contract PriceSnapShot is AutomationCompatibleInterface {
 
     //  constants
 
-    uint256 public constant SNAPSHOT_INTERVAL = 180; 
+    uint256 public constant SNAPSHOT_INTERVAL = 180;
     struct SnapShot {
         bytes32 commitment;
         uint256 updatedAt;
@@ -32,11 +31,16 @@ contract PriceSnapShot is AutomationCompatibleInterface {
 
     function checkUpkeep(
         bytes calldata /*checkData*/
-    ) external view override returns (bool upkeepNeeded, bytes memory performData) {
-        (uint80 roundId, , , , ) = feed
-            .latestRoundData();
+    )
+        external
+        view
+        override
+        returns (bool upkeepNeeded, bytes memory performData)
+    {
+        (uint80 roundId, , , , ) = feed.latestRoundData();
         bool newRound = roundId > lastSnapShotRound;
-        bool timePassed = (block.timestamp - lastSnapShotTime) >= SNAPSHOT_INTERVAL;
+        bool timePassed = (block.timestamp - lastSnapShotTime) >=
+            SNAPSHOT_INTERVAL;
 
         upkeepNeeded = newRound || timePassed;
         performData = "";
@@ -48,10 +52,11 @@ contract PriceSnapShot is AutomationCompatibleInterface {
 
     // internal funnctions
 
-    function _snapShot() internal{
+    function _snapShot() internal {
+        console.log("feed", address(feed));
         (uint80 roundId, int256 price, , uint256 updatedAt, ) = feed
             .latestRoundData();
-        require(price>0,"Invalid price");
+        require(price > 0, "Invalid price");
         currentEpoch++;
         Field.Type[] memory inputs = new Field.Type[](2);
         inputs[0] = Field.toField(roundId);
@@ -72,13 +77,14 @@ contract PriceSnapShot is AutomationCompatibleInterface {
     function getCurrentEpoch() external view returns (uint256) {
         return currentEpoch;
     }
+
     function getCurrentSnapShot() external view returns (SnapShot memory) {
         return s_snapShots[currentEpoch];
     }
 
-    function getSnapShot(uint256 epoch) external view returns (SnapShot memory) {
+    function getSnapShot(
+        uint256 epoch
+    ) external view returns (SnapShot memory) {
         return s_snapShots[epoch];
     }
-
-    
 }
