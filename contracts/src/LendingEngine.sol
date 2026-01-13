@@ -5,12 +5,17 @@ import {IERC20} from "lib/openzeppelin-contracts/contracts/interfaces/IERC20.sol
 import {SafeERC20} from "lib/openzeppelin-contracts/contracts/token/ERC20/utils/SafeERC20.sol";
 import {ILpToken} from "./interface/ILpToken.sol";
 import {IncrementalMerkleTree, Poseidon2} from "./IncrementalMerkleTree.sol";
+import {LoanIncrementalMerkleTree} from "./LoanIncrementalMerkleTree.sol";
 import {console2} from "forge-std/console2.sol";
 import {IVerifier} from "./interface/IVerifier.sol";
 import {PriceSnapShot} from "./PriceSnapShot.sol";
 import {AutomationCompatibleInterface} from "../lib/chainlink-brownie-contracts/contracts/src/v0.8/automation/interfaces/AutomationCompatibleInterface.sol";
 
-contract LendingEngine is IncrementalMerkleTree, AutomationCompatibleInterface {
+contract LendingEngine is
+    IncrementalMerkleTree,
+    AutomationCompatibleInterface,
+    LoanIncrementalMerkleTree
+{
     // errors
     error LendingEngine__InvalidCollateralToken();
     error LendingEngine__UnknownRoot();
@@ -120,7 +125,10 @@ contract LendingEngine is IncrementalMerkleTree, AutomationCompatibleInterface {
         uint32 depth_,
         Poseidon2 hasher_,
         address healthProofVerifier_
-    ) IncrementalMerkleTree(depth_, hasher_) {
+    )
+        IncrementalMerkleTree(depth_, hasher_)
+        LoanIncrementalMerkleTree(depth_, hasher_)
+    {
         s_borrowToken = borrowToken_;
         i_collateralVerifier = IVerifier(collateralVerifier_);
         i_healthVerifier = IVerifier(healthProofVerifier_);
@@ -179,8 +187,9 @@ contract LendingEngine is IncrementalMerkleTree, AutomationCompatibleInterface {
         uint256 assetPrice_,
         uint256 tokenId_,
         address payable recepientAddress,
-        bytes32[] memory publicInputs
-    ) external isTokenAllowed(tokenId_) {
+        bytes32[] memory publicInputs,
+        bytes32 _commitment
+    ) external isTokenAllowed(tokenId_) returns (uint256) {
         if (!stealthVault.isKnownRoot(root_)) {
             revert LendingEngine__UnknownRoot();
         }
@@ -222,6 +231,7 @@ contract LendingEngine is IncrementalMerkleTree, AutomationCompatibleInterface {
             repaid: false
         });
         totalBorrowed += borrowAmount_;
+        uint256 leafIndex = _insertLoanTree(_commitment);
 
         IERC20(s_borrowToken).safeTransfer(recepientAddress, borrowAmount_);
         emit LoanBorrowed(recepientAddress, nullifierHash_, block.timestamp);

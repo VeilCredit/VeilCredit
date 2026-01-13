@@ -4,12 +4,12 @@ import fs from "fs";
 import path from "path";
 import { merkleTree } from "./merkleTree.js";
 
-const circuit = JSON.parse(
-  fs.readFileSync(path.resolve("./zk/circuits/circuits.json"), "utf-8")
-);
-
 const MAX_U128 = (1n << 128n) - 1n;
 const MAX_U64 = (1n << 64n) - 1n;
+
+const circuit = JSON.parse(
+  fs.readFileSync(path.resolve("./zk/circuits/circuit_prove_solvancy.json"), "utf-8")
+);
 
 function assertU128(x, name) {
   if (x < 0n || x > MAX_U128) throw new Error(`${name} out of u128 range`);
@@ -28,25 +28,19 @@ async function jsComputeRoot(bb, leaf, path, is_even) {
   return current;
 }
 
-/**
- * Canonical BN254 field adapter
- * This is the ONLY allowed conversion
- */
 function zkField(x) {
   return new Fr(BigInt(x)).toString();
 }
 
-export async function generateBorrowProof(params) {
+export async function generatePeriodicProofOfSolvancy(params) {
   const {
     nullifier,
     secret,
     borrowAmount,
     assetPrice,
-    minCollateralRatio,
+    liquidationThreshold,
     tokenId,
-    recipient,
     collateralAmount,
-    actualCollateralRatio,
     epochCommitment,
     epoch,
     roundId,
@@ -55,40 +49,33 @@ export async function generateBorrowProof(params) {
   } = params;
 
   const bb = await Barretenberg.new();
-
   try {
     const noir = new Noir(circuit);
     const honk = new UltraHonkBackend(circuit.bytecode, { threads: 1 });
 
-    // ---- VALIDATION ----
     assertU128(BigInt(borrowAmount), "borrowAmount");
     assertU128(BigInt(assetPrice), "assetPrice");
-    assertU128(BigInt(minCollateralRatio), "minCollateralRatio");
+    assertU128(BigInt(liquidationThreshold), "minCollateralRatio");
     assertU64(BigInt(tokenId), "tokenId");
     assertU128(BigInt(collateralAmount), "collateralAmount");
-    assertU128(BigInt(actualCollateralRatio), "actualCollateralRatio");
     assertU128(BigInt(epoch), "epoch");
     assertU64(BigInt(roundId), "roundId");
     assertU128(BigInt(price), "price");
 
-    // ---- CANONICAL FIELD CONVERSION ----
     const nullifierF = new Fr(BigInt(nullifier));
     const secretF = new Fr(BigInt(secret));
     const borrowAmountF = new Fr(BigInt(borrowAmount));
+    const liquidationThresholdF = new Fr(BigInt(liquidationThreshold))
     const assetPriceF = new Fr(BigInt(assetPrice));
-    const minCRF = new Fr(BigInt(minCollateralRatio));
     const tokenIdF = new Fr(BigInt(tokenId));
     const collateralAmountF = new Fr(BigInt(collateralAmount));
-    const actualCRF = new Fr(BigInt(actualCollateralRatio));
     const epochF = new Fr(BigInt(epoch));
     const roundIdF = new Fr(BigInt(roundId));
     const priceF = new Fr(BigInt(price));
     const recipientF = new Fr(BigInt(recipient));
     const epochCommitmentF = new Fr(BigInt(epochCommitment));
 
-    // ---- HASHES (CANONICAL ONLY) ----
     const nullifierHashF = await bb.poseidon2Hash([nullifierF, nullifierF]);
-
     const commitmentF = await bb.poseidon2Hash([
       nullifierF,
       secretF,
@@ -96,20 +83,16 @@ export async function generateBorrowProof(params) {
       tokenIdF,
     ]);
 
-
-    // ---- MERKLE TREE ----
     const tree = await merkleTree(leaves);
     const proofData = tree.proof(tree.getIndex(commitmentF.toString()));
 
-    // ---- CIRCUIT INPUT ----
     const input = {
       root: proofData.root,
       nullifier_hash: zkField(nullifierHashF),
       borrow_amount: zkField(borrowAmountF),
       asset_price: zkField(assetPriceF),
-      minimum_collateralization_ratio: zkField(minCRF),
+      liquidation_threshold: zkField(liquidationThresholdF),
       tokenId: zkField(tokenIdF),
-      recepient: zkField(recipientF),
       epoch_commitment: zkField(epochCommitmentF),
       epoch: zkField(epochF),
 
@@ -119,32 +102,24 @@ export async function generateBorrowProof(params) {
       is_even: proofData.pathIndices,
       amount: zkField(collateralAmountF),
       actual_collateralization_ratio: zkField(actualCRF),
-      roundId: zkField(roundIdF),
       price: zkField(priceF),
+      roundId: zkField(roundIdF),
     };
+
     const jsRoot = await jsComputeRoot(
-      bb,
-      commitmentF,
-      proofData.pathElements,
-      proofData.pathIndices
-    );
+        bb,
+        commitmentF,
+        proofData.pathElements,
+        proofData.pathIndices
+    )
 
-    if (jsRoot.toString() !== proofData.root) {
+    if(jsRoot.toString() != proofData.root){
       throw new Error("JS root != public root — proof invalid");
     }
+    const {witness} = await noir.execute(input)
 
-    if (jsRoot.toString() !== proofData.root) {
-      throw new Error("JS root != public root — proof invalid");
-    }
-
-    const { witness } = await noir.execute(input);
-    const { proof, publicInputs } = await honk.generateProof(witness, {
-      keccakZK: true,
-    });
-    console.log(proof)
-    console.log(publicInputs)
-
-    return { proof, publicInputs };
+    const {proof, publicInputs } = await honk.generateProof(witness,{keccakZK: true,})
+    return {proof, publicInputs}
   } finally {
     await bb.destroy();
   }

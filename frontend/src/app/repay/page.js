@@ -1,3 +1,4 @@
+
 'use client'
 
 import { useAccount, useContractWrite } from 'wagmi'
@@ -5,110 +6,152 @@ import { motion } from 'framer-motion'
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { 
-  CreditCard, DollarSign, CheckCircle2, AlertCircle,
-  Clock, TrendingDown, RefreshCw, ChevronRight,
-  ArrowRight, Info, Shield, ExternalLink
+import {
+  CreditCard, CheckCircle2, Clock,
+  RefreshCw, ChevronRight, ArrowRight,
+  Info, Shield
 } from 'lucide-react'
+import { ethers } from 'ethers'
 
-// Mock contract ABI - Replace with actual Lending Engine ABI
-const LENDING_ENGINE_ABI = [
-  "function repayLoan(uint256 loanId) external payable",
-  "function getLoanDetails(uint256 loanId) external view returns (uint256 amount, uint256 interest, bool isRepaid)"
+// ================= CONFIG =================
+
+const ZK_BACKEND = 'http://localhost:4000/generate-repayment-commitment'
+const LENDING_ENGINE_ADDRESS = '0xc3e53F4d16Ae77Db1c982e75a937B9f60FE63690'
+const USDT_TOKEN_ADDRESS = '0x09635F643e140090A9A8Dcd712eD6285858ceBef'
+const ERC20_ABI = [
+  "function approve(address spender, uint256 amount) external returns (bool)",
+  "function decimals() view returns (uint8)",
+  "function balanceOf(address account) view returns (uint256)",
 ];
+const LENDING_ENGINE_ABI = [
+  "function repayLoan(bytes32 commitment_, uint256 amount_, bytes32 nullifierHash_) external returns (uint32)",
+  "function getLoanDetails(bytes32 nullifierHash_) external view returns (tuple(uint256 borrowAmount,uint256 tokenId,uint256 minimumCollateralUsed,uint256 startTime,uint256 userBorrowIndex,bool isLiquidated,bool repaid))"
+]
+
+// ================= COMPONENT =================
 
 export default function RepayPage() {
-  const { address, isConnected } = useAccount()
-  const router = useRouter()
-  
-  // Repayment state
-  const [selectedLoan, setSelectedLoan] = useState(null)
-  const [repayAmount, setRepayAmount] = useState('')
-  const [isProcessing, setIsProcessing] = useState(false)
-  
-  // Mock data - Replace with actual contract calls
-  const [loans, setLoans] = useState([
-    {
-      id: 'LN-001',
-      asset: 'USDC',
-      borrowedAmount: '2,000',
-      totalDue: '2,100',
-      interest: '100',
-      dueDate: '2024-03-15',
-      healthFactor: 1.8,
-      commitment: '0x5e9b...f8a1',
-      status: 'active'
-    },
-    {
-      id: 'LN-002',
-      asset: 'ETH',
-      borrowedAmount: '1.0',
-      totalDue: '1.05',
-      interest: '0.05',
-      dueDate: '2024-03-20',
-      healthFactor: 2.1,
-      commitment: '0x3a7b...d9e2',
-      status: 'active'
-    }
-  ])
-  
-  // Contract write for repayment
-  const { write: repayLoan, isLoading: isSubmitting } = useContractWrite({
-    address: '0xLENDING_ENGINE_ADDRESS',
-    abi: LENDING_ENGINE_ABI,
-    functionName: 'repayLoan',
-  })
-  
-  // Select a loan
-  const handleSelectLoan = (loan) => {
-    setSelectedLoan(loan)
-    setRepayAmount(loan.totalDue)
-  }
-  
-  // Handle repayment
-  const handleRepay = async () => {
-    if (!selectedLoan) {
-      alert('Please select a loan to repay')
-      return
-    }
-    
-    setIsProcessing(true)
-    
-    // In real app: repayLoan({ args: [selectedLoan.id] })
-    // Simulate transaction
-    setTimeout(() => {
-      alert(`Repayment successful!\n\nLoan: ${selectedLoan.id}\nAmount: ${repayAmount} ${selectedLoan.asset}\n\nNo proof required for repayment. You can now generate a withdrawal proof.`)
-      
-      // Update loan status
-      setLoans(prev => prev.map(loan => 
-        loan.id === selectedLoan.id 
-          ? { ...loan, status: 'repaid' } 
-          : loan
-      ))
-      
-      // Store in localStorage for dashboard to pick up
-      localStorage.setItem('recentRepayment', JSON.stringify({
-        ...selectedLoan,
-        status: 'repaid',
-        repaymentTime: new Date().toISOString()
-      }))
-      
-      setIsProcessing(false)
-      setSelectedLoan(null)
-      setRepayAmount('')
-      
-      // Redirect to withdrawal page
-      router.push('/withdraw')
-    }, 2000)
-  }
-  
-  // Redirect if not connected
+  const router = useRouter();
+
+  const [loans, setLoans] = useState([]);
+  const [selectedLoan, setSelectedLoan] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // ---------------- LOAD ACTIVE LOANS ----------------
+
   useEffect(() => {
-    if (!isConnected) {
-      router.push('/dashboard')
+    async function loadLoans() {
+      if (!window.ethereum) return;
+
+      const stored = JSON.parse(
+        localStorage.getItem("zkDeposits") || "[]"
+      );
+
+      if (!stored.length) return;
+
+      const provider = new ethers.BrowserProvider(window.ethereum);
+      const engine = new ethers.Contract(
+        LENDING_ENGINE_ADDRESS,
+        LENDING_ENGINE_ABI,
+        provider
+      );
+
+      const active = [];
+
+      for (let i = 0; i < stored.length; i++) {
+        const d = stored[i];
+
+        const loan = await engine.getLoanDetails(
+          ethers.toBeHex(BigInt(d.nullifier_hash), 32)
+        );
+
+        const [
+          borrowAmount,
+          tokenId,
+          minimumCollateralUsed,
+          startTime,
+          userBorrowIndex,
+          isLiquidated,
+          repaid,
+        ] = loan;
+
+        if (repaid || isLiquidated) continue;
+
+        active.push({
+          id: `LN-${i + 1}`,
+          asset: d.asset,
+          borrowAmount,
+          tokenId,
+          minimumCollateralUsed,
+          startTime,
+          userBorrowIndex,
+          isLiquidated,
+          repaid,
+          status: repaid ? "repaid" : "active",
+          repaymentCommitment: d.repayCommitment,
+          nullifierHash: d.nullifier_hash,
+        });
+      }
+
+      setLoans(active);
     }
-  }, [isConnected, router])
-  
+
+    loadLoans();
+  }, []);
+
+  const [repayAmount, setRepayAmount] = useState("");
+const [isProcessing, setIsProcessing] = useState(false);
+
+const handleSelectLoan = (loan) => {
+  setSelectedLoan(loan);
+  setRepayAmount(
+    (Number(loan.borrowAmount) / 1e18).toString()
+  );
+};
+
+  // ---------------- REPAY ----------------
+
+  const handleRepay = async () => {
+    if (!selectedLoan) return;
+
+    try {
+      setIsSubmitting(true);
+
+      const provider = new ethers.BrowserProvider(window.ethereum);
+      const signer = await provider.getSigner();
+
+      const engine = new ethers.Contract(
+        LENDING_ENGINE_ADDRESS,
+        LENDING_ENGINE_ABI,
+        signer
+      );
+
+      const token = new ethers.Contract(USDT_TOKEN_ADDRESS, ERC20_ABI, signer);
+      const approveTx  = await token.approve(LENDING_ENGINE_ADDRESS,selectedLoan.borrowAmount)
+
+
+      const tx = await engine.repayLoan(
+        selectedLoan.repaymentCommitment,
+        selectedLoan.borrowAmount,
+        selectedLoan.nullifierHash,
+        { gasLimit: 2_000_0000n }
+      );
+
+      console.log("err")
+
+
+      await tx.wait();
+      router.push("/withdraw");
+    } catch (err) {
+      console.error(err);
+      alert("Repayment failed");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  // ================= UI (UNCHANGED) =================
+
   return (
     <div className="relative min-h-screen overflow-hidden">
       {/* Background matching dashboard */}
@@ -133,7 +176,7 @@ export default function RepayPage() {
           />
         ))}
       </div>
-      
+
       {/* Main Content */}
       <div className="relative z-10">
         <main className="container mx-auto px-5 md:px-7 py-20">
@@ -197,7 +240,6 @@ export default function RepayPage() {
                       <div className="flex items-center justify-between">
                         <div>
                           <div className="flex items-center gap-3 mb-3">
-                            <h3 className="text-xl font-bold text-white">{loan.id}</h3>
                             <span className="px-3 py-1 rounded-full text-xs bg-white/10 text-gray-300">
                               {loan.asset}
                             </span>
@@ -211,19 +253,17 @@ export default function RepayPage() {
                           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
                             <div>
                               <p className="text-gray-400 text-sm">Borrowed</p>
-                              <p className="text-lg font-semibold text-white">{loan.borrowedAmount} {loan.asset}</p>
+                              <p className="text-lg font-semibold text-white">{Number(loan.borrowAmount) / 10**18} USDT</p>
                             </div>
                             <div>
                               <p className="text-gray-400 text-sm">Total Due</p>
-                              <p className="text-lg font-semibold text-white">{loan.totalDue} {loan.asset}</p>
+                              <p className="text-lg font-semibold text-white">{Number(loan.borrowAmount) / 10**18} USDT</p>
                             </div>
                             <div>
                               <p className="text-gray-400 text-sm">Interest</p>
-                              <p className="text-lg font-semibold text-yellow-400">{loan.interest} {loan.asset}</p>
+                              <p className="text-lg font-semibold text-yellow-400">0 USDT</p>
                             </div>
                             <div>
-                              <p className="text-gray-400 text-sm">Due Date</p>
-                              <p className="text-lg font-semibold text-white">{loan.dueDate}</p>
                             </div>
                           </div>
                           
@@ -298,23 +338,23 @@ export default function RepayPage() {
                   <div className="space-y-6">
                     <div className="p-6 rounded-xl bg-gradient-to-r from-[#5C0C0B]/20 to-[#7A2214]/20">
                       <div className="text-center mb-4">
-                        <div className="text-3xl font-bold text-white mb-2">{repayAmount} {selectedLoan.asset}</div>
+                        <div className="text-3xl font-bold text-white mb-2">{Number(selectedLoan.borrowAmount) / 10**18}</div>
                         <div className="text-gray-400">Total Amount Due</div>
                       </div>
                       
                       <div className="space-y-3">
                         <div className="flex justify-between">
                           <span className="text-gray-400">Principal</span>
-                          <span className="text-white">{selectedLoan.borrowedAmount} {selectedLoan.asset}</span>
+                          <span className="text-white">{Number(selectedLoan.borrowAmount) / 10**18} USDT</span>
                         </div>
                         <div className="flex justify-between">
                           <span className="text-gray-400">Interest</span>
-                          <span className="text-yellow-400">{selectedLoan.interest} {selectedLoan.asset}</span>
+                          <span className="text-yellow-400">0</span>
                         </div>
                         <div className="h-px bg-white/10" />
                         <div className="flex justify-between text-lg font-semibold">
                           <span className="text-white">Total</span>
-                          <span className="text-white">{selectedLoan.totalDue} {selectedLoan.asset}</span>
+                          <span className="text-white">{Number(selectedLoan.borrowAmount) / 10**18}</span>
                         </div>
                       </div>
                     </div>

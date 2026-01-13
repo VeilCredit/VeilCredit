@@ -20,7 +20,7 @@ import { ethers } from "ethers";
 const ZK_BACKEND_URL = "http://localhost:4000/generate-commitment";
 
 // Vault contract
-const STEALTH_VAULT_ADDRESS = "0x9A676e781A523b5d0C0e43731313A708CB607508";
+const STEALTH_VAULT_ADDRESS = "0x67d269191c92Caf3cD7723F116c85e6E9bf55933";
 
 // Supported assets
 const ASSETS = {
@@ -28,7 +28,7 @@ const ASSETS = {
     symbol: "WETH",
     name: "Wrapped ETH",
     tokenId: 0,
-    address: "0x2279B7A0a67DB372996a5FaB50D91eAA73d2eBe6",
+    address: "0x322813Fd9A801c5507c9de605d63CEA4f2CE6c44",
     apy: "3.2%",
   },
 };
@@ -116,14 +116,16 @@ export default function DepositPage() {
 
       // Decode ONLY what the contract needs
       const abi = ethers.AbiCoder.defaultAbiCoder();
-      const [commitment] = abi.decode(
-        ["bytes32", "bytes32", "bytes32"],
+      const [commitment,loanCommitment,repayCommitment] = abi.decode(
+        ["bytes32", "bytes32", "bytes32","bytes32","bytes32"],
         payload
       );
 
       /* ---------- 2. Store secrets locally (CANONICAL ONLY) ---------- */
       storeSecretsLocally({
         commitment: zkParams.commitment,          // decimal string
+        loanCommitment: loanCommitment,
+        repayCommitment:repayCommitment,
         nullifier: zkParams.nullifier,            // decimal string
         secret: zkParams.secret,                  // decimal string
         nullifier_hash: zkParams.nullifier_hash,  // decimal string

@@ -2,48 +2,92 @@ use poseidon::poseidon2;
 mod merkle_tree;
 
 fn main(
+    // -------------------------
+    // Public inputs (on-chain)
+    // -------------------------
+    root_deposit: pub Field,
+    root_loan: pub Field,
     root_repay: pub Field,
-    nullifier_hash_repay: pub Field,
-    nullifier_repay: Field,
-    secret_repay: Field,
+    withdraw_amount: pub u128,
+    recipient: pub Field,
+
+    // -------------------------
+    // Private inputs (witness)
+    // -------------------------
+    // Deposit secrets
+    nullifier_d: Field,
+    secret_d: Field,
+    token_id: Field,
+    amount: Field,
+
+    // Merkle proofs
+    merkle_proof_deposit: [Field; 16],
+    is_even_deposit: [bool; 16],
+
+    merkle_proof_loan: [Field; 16],
+    is_even_loan: [bool; 16],
+
     merkle_proof_repay: [Field; 16],
     is_even_repay: [bool; 16],
-    withdrawAmount: pub u128,
+) {
 
+    // ----------------------------------
+    // 1. Deposit commitment & membership
+    // ----------------------------------
+    let deposit_commitment: Field =
+        poseidon2::Poseidon2::hash(
+            [nullifier_d, secret_d, amount, token_id],
+            4
+        );
+
+    let computed_deposit_root =
+        merkle_tree::compute_merkle_root(
+            deposit_commitment,
+            merkle_proof_deposit,
+            is_even_deposit
+        );
+
+    assert(computed_deposit_root == root_deposit);
+
+    // ----------------------------------
+    // 2. Loan commitment (DERIVED)
+    // ----------------------------------
+    let loan_commitment: Field =
+        poseidon2::Poseidon2::hash([deposit_commitment], 1);
+
+    let computed_loan_root =
+        merkle_tree::compute_merkle_root(
+            loan_commitment,
+            merkle_proof_loan,
+            is_even_loan
+        );
+
+    assert(computed_loan_root == root_loan);
+
+    // ----------------------------------
+    // 3. Repayment commitment (DERIVED)
+    // ----------------------------------
+    let repay_commitment: Field =
+        poseidon2::Poseidon2::hash([loan_commitment], 1);
+
+    let computed_repay_root =
+        merkle_tree::compute_merkle_root(
+            repay_commitment,
+            merkle_proof_repay,
+            is_even_repay
+        );
+
+    assert(computed_repay_root == root_repay);
+
+    // ----------------------------------
+    // 4. Withdrawal amount binding
+    // ----------------------------------
+    assert(amount == withdraw_amount as Field);
+
+    // ----------------------------------
+    // 5. Recipient binding (no-op but
     
-    root_deposit: pub Field,
-    nullifier_hash_deposit: pub Field,
-    borrow_amount: pub u128,
-    asset_price: pub u128,
-    minimum_collateralization_ratio: pub u128,
-    tokenId: pub u64,
-    recepient: pub Field,
-
-    nullifier_deposit: Field,
-    secret_deposit: Field,
-    merkle_proof_deposit: [Field;16],
-    is_even_deposit: [bool;16],
-    amount: u128,
-    actual_collateralization_ratio: u128,
-
-    ) {
-    // commitment to ensure that the loan is repaid
-    let commitment: Field = poseidon2::Poseidon2::hash([nullifier_repay, secret_repay], 2);
-    let computed_nullifier_hash: Field = poseidon2::Poseidon2::hash([nullifier_repay], 1);
-    assert(computed_nullifier_hash == nullifier_hash_repay);
-    let computed_root: Field = merkle_tree::compute_merkle_root(commitment, merkle_proof_repay, is_even_repay);
-    assert(computed_root == root_repay);
-
-    // commitment to ensure that the its tied to the user so he cannot fake withdrawals
-    assert(actual_collateralization_ratio>=minimum_collateralization_ratio);
-    let generated_commitment = poseidon2::Poseidon2::hash([nullifier_deposit,secret_deposit,amount as Field,tokenId as Field],4);
-    let computed_nullifier_deposit_hash = poseidon2::Poseidon2::hash([nullifier_deposit, nullifier_deposit], 2);
-    assert(nullifier_hash_deposit == computed_nullifier_deposit_hash);
-    let computed_root = merkle_tree::compute_merkle_root(generated_commitment, merkle_proof_deposit, is_even_deposit);
-    assert(root_deposit == computed_root);
-    assert(amount==withdrawAmount);
-    assert(amount*asset_price>=((borrow_amount*actual_collateralization_ratio)/100));
-    assert(recepient*recepient==recepient*recepient);
+    //    prevents optimizer removal)
+    // ----------------------------------
+    assert(recipient * recipient == recipient * recipient);
 }
-
-

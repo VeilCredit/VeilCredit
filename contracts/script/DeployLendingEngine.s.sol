@@ -33,9 +33,9 @@ contract DeployLendingEngine is Script {
         console.log("price feed code size", size);
 
         address user = 0x70997970C51812dc3A010C7d01b50e0d17dc79C8;
-        address collateralVerifier = 0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512;
-        address loanRepaymentVerifier = 0x5FC8d32690cc91D4c39d9d3abcBD16989F875707;
-        address loanHealthVerifier = 0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9;
+        address collateralVerifier = 0x959922bE3CAee4b8Cd9a407cc3ac1C251C2007B1;
+        address loanRepaymentVerifier = 0x68B1D87F95878fE05B998F19b66F4baba5De1aed;
+        address loanHealthVerifier = 0xc6e7DF5E7b4f2A278906862b61205850344D4e7d;
         StealthVault stealthVault = new StealthVault(
             weth,
             16,

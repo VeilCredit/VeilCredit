@@ -19,7 +19,7 @@ import {
 const BACKEND_URL = "http://localhost:4000";
 
 const LENDING_ENGINE_ADDRESS =
-  "0x959922bE3CAee4b8Cd9a407cc3ac1C251C2007B1";
+  "0xc3e53F4d16Ae77Db1c982e75a937B9f60FE63690";
 
 const WETH_TOKEN_ID = 0;
 
@@ -32,12 +32,13 @@ const LENDING_ENGINE_ABI = [
   `function borrowLoan(
       bytes proof,
       bytes32 root1,
-      bytes32 root2,
+      bytes32 nullifierHash,
       uint256 borrowAmount,
       uint256 assetPrice,
       uint256 tokenId,
       address recipient,
-      bytes32[] publicInputs
+      bytes32[] publicInputs,
+      bytes32 commitment
   ) external`,
 ];
 
@@ -161,12 +162,13 @@ export default function BorrowPage() {
       const tx = await engine.borrowLoan(
         proofData.proofBytes,          // ✅ REAL BYTES
         proofData.publicInputs[0],     // root1
-        proofData.publicInputs[1],     // root2
+        proofData.publicInputs[1],     // nullifierHash
         ethers.parseEther(loanAmount),
         proofData.publicInputs[2],     // assetPrice
         WETH_TOKEN_ID,
         await signer.getAddress(),
         proofData.publicInputs,
+        deposit.loanCommitment,
         { gasLimit: 2_500_0000n }
       );
 

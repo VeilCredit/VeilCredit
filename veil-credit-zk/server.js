@@ -3,7 +3,7 @@ import cors from "cors";
 import { Barretenberg, Fr } from "@aztec/bb.js";
 import { ethers } from "ethers";
 import { generateBorrowProof } from "./zk/generateBorrowProof.js";
-
+import { generateRepaymentProof } from "./zk/generateRepaymentProof.js";
 const app = express();
 app.use(cors());
 app.use(express.json());
@@ -43,6 +43,9 @@ app.post("/generate-commitment", async (req, res) => {
       tokenIdFr,
     ]);
 
+    const loanCommitmentF = await bb.poseidon2Hash([commitmentFr]);
+    const repaymentCommitmentF = await bb.poseidon2Hash([loanCommitmentF])
+
     const nullifierHashFr = await bb.poseidon2Hash([
       nullifier,
       nullifier,
@@ -50,15 +53,19 @@ app.post("/generate-commitment", async (req, res) => {
 
     // Convert EVERYTHING to canonical decimal strings
     const commitment = commitmentFr.toString();
+    const loanCommitment = loanCommitmentF.toString()
+    const repayCommitment = repaymentCommitmentF.toString()
     const nullifierStr = nullifier.toString();
     const secretStr = secret.toString();
     const nullifierHashStr = nullifierHashFr.toString();
 
     // Contract payload (bytes32 expected)
     const payload = ethers.AbiCoder.defaultAbiCoder().encode(
-      ["bytes32", "bytes32", "bytes32"],
+      ["bytes32", "bytes32", "bytes32","bytes32","bytes32"],
       [
         ethers.toBeHex(BigInt(commitment), 32),
+        ethers.toBeHex(BigInt(loanCommitment), 32),
+        ethers.toBeHex(BigInt(repayCommitment), 32),
         ethers.toBeHex(BigInt(nullifierStr), 32),
         ethers.toBeHex(BigInt(secretStr), 32),
       ]
@@ -84,6 +91,7 @@ app.post("/generate-commitment", async (req, res) => {
   }
 });
 
+
 app.post("/generate-borrow-proof", async (req, res) => {
   try {
     /**
@@ -98,6 +106,31 @@ app.post("/generate-borrow-proof", async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+
+app.post("/generate-periodic-proof-of-solvancy", async (req, res) => {
+  try {
+    /**
+     * IMPORTANT:
+     * req.body MUST contain ONLY canonical field strings
+     * No bytes. No hex. No Fr reconstruction.
+     */
+    const result = await generatePeriodicProofOfSolvancy(req.body);
+    res.json(result);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.post("/generate-repayment-proof", async (req,res) => {
+  try{
+    const result = await generateRepaymentProof(req.body);
+    res.json(result);
+  }catch(err){
+    console.error(err);
+    res.status(500).json({error: err.message})
+  }
+})
 
 app.listen(4000, () => {
   console.log("ZK service running at http://localhost:4000");

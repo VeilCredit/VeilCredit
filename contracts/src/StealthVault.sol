@@ -129,12 +129,21 @@ contract StealthVault is IncrementalMerkleTree, Ownable {
         bytes memory proof_,
         bytes32 root_1,
         bytes32 root_2,
+        bytes32 root_3,
         bytes32 nullifierHash,
         address withdrawAddress,
         bytes32[] memory publicInputs
     ) external allowListedTokens(token_) {
         // root one is the root in the repayment merkle tree and root 2 is the roon in the deposit merkle tree
-        if (lendingEngine.isKnownRoot(root_1)) {
+        if (!lendingEngine.isKnownRoot(root_1)) {
+            revert StealthVault__UnknownRoot();
+        }
+
+        if (!lendingEngine.isKnownRootLoanTree(root_3)) {
+            revert StealthVault__UnknownRoot();
+        }
+
+        if (!isKnownRoot(root_2)) {
             revert StealthVault__UnknownRoot();
         }
         if (isKnownRoot(root_2))
