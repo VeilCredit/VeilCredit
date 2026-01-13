@@ -16,8 +16,8 @@ import { ethers } from 'ethers'
 // ================= CONFIG =================
 
 const ZK_BACKEND = 'http://localhost:4000/generate-repayment-commitment'
-const LENDING_ENGINE_ADDRESS = '0xc3e53F4d16Ae77Db1c982e75a937B9f60FE63690'
-const USDT_TOKEN_ADDRESS = '0x09635F643e140090A9A8Dcd712eD6285858ceBef'
+const LENDING_ENGINE_ADDRESS = '0x959922bE3CAee4b8Cd9a407cc3ac1C251C2007B1'
+const USDT_TOKEN_ADDRESS = '0xA51c1fc2f0D1a1b8494Ed1FE312d7C3a78Ed91C0'
 const ERC20_ABI = [
   "function approve(address spender, uint256 amount) external returns (bool)",
   "function decimals() view returns (uint8)",
@@ -26,6 +26,7 @@ const ERC20_ABI = [
 const LENDING_ENGINE_ABI = [
   "function repayLoan(bytes32 commitment_, uint256 amount_, bytes32 nullifierHash_) external returns (uint32)",
   "function getLoanDetails(bytes32 nullifierHash_) external view returns (tuple(uint256 borrowAmount,uint256 tokenId,uint256 minimumCollateralUsed,uint256 startTime,uint256 userBorrowIndex,bool isLiquidated,bool repaid))"
+
 ]
 
 // ================= COMPONENT =================

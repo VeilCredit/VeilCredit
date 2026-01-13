@@ -19,7 +19,7 @@ import {
 const BACKEND_URL = "http://localhost:4000";
 
 const LENDING_ENGINE_ADDRESS =
-  "0xc3e53F4d16Ae77Db1c982e75a937B9f60FE63690";
+  "0x959922bE3CAee4b8Cd9a407cc3ac1C251C2007B1";
 
 const WETH_TOKEN_ID = 0;
 

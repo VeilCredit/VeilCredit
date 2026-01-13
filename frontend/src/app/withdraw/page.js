@@ -24,8 +24,8 @@ import {
 
 // Configuration
 const BACKEND_URL = "http://localhost:4000";
-const STEALTH_VAULT_ADDRESS = "0x67d269191c92Caf3cD7723F116c85e6E9bf55933";
-const LENDING_ENGINE_ADDRESS = "0xc3e53F4d16Ae77Db1c982e75a937B9f60FE63690";
+const STEALTH_VAULT_ADDRESS = "0x9A676e781A523b5d0C0e43731313A708CB607508";
+const LENDING_ENGINE_ADDRESS = "0x959922bE3CAee4b8Cd9a407cc3ac1C251C2007B1";
 
 const STEALTH_VAULT_ABI = [
   `function withdraw(
@@ -53,7 +53,7 @@ const ASSETS = {
   WETH: {
     symbol: "WETH",
     name: "Wrapped ETH",
-    address: "0x322813Fd9A801c5507c9de605d63CEA4f2CE6c44",
+    address: "0x2279B7A0a67DB372996a5FaB50D91eAA73d2eBe6",
   },
 };
 

@@ -4,6 +4,7 @@ import { Barretenberg, Fr } from "@aztec/bb.js";
 import { ethers } from "ethers";
 import { generateBorrowProof } from "./zk/generateBorrowProof.js";
 import { generateRepaymentProof } from "./zk/generateRepaymentProof.js";
+import { generatePeriodicProofOfSolvancy } from "./zk/generatePeriodicProofOfSolvancy.js";
 const app = express();
 app.use(cors());
 app.use(express.json());

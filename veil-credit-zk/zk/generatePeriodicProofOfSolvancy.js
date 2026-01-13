@@ -54,17 +54,35 @@ export async function generatePeriodicProofOfSolvancy(params) {
     const honk = new UltraHonkBackend(circuit.bytecode, { threads: 1 });
 
     assertU128(BigInt(borrowAmount), "borrowAmount");
+    console.log("here")
+
     assertU128(BigInt(assetPrice), "assetPrice");
+    console.log("here")
+
     assertU128(BigInt(liquidationThreshold), "minCollateralRatio");
+    console.log("here")
+
     assertU64(BigInt(tokenId), "tokenId");
+    console.log("here")
+
     assertU128(BigInt(collateralAmount), "collateralAmount");
+    console.log("here")
+
     assertU128(BigInt(epoch), "epoch");
+    console.log("here")
+
     assertU64(BigInt(roundId), "roundId");
+    console.log("here")
+
     assertU128(BigInt(price), "price");
 
+
     const nullifierF = new Fr(BigInt(nullifier));
+
     const secretF = new Fr(BigInt(secret));
+
     const borrowAmountF = new Fr(BigInt(borrowAmount));
+
     const liquidationThresholdF = new Fr(BigInt(liquidationThreshold))
     const assetPriceF = new Fr(BigInt(assetPrice));
     const tokenIdF = new Fr(BigInt(tokenId));
@@ -72,7 +90,6 @@ export async function generatePeriodicProofOfSolvancy(params) {
     const epochF = new Fr(BigInt(epoch));
     const roundIdF = new Fr(BigInt(roundId));
     const priceF = new Fr(BigInt(price));
-    const recipientF = new Fr(BigInt(recipient));
     const epochCommitmentF = new Fr(BigInt(epochCommitment));
 
     const nullifierHashF = await bb.poseidon2Hash([nullifierF, nullifierF]);
@@ -101,7 +118,6 @@ export async function generatePeriodicProofOfSolvancy(params) {
       merkle_proof: proofData.pathElements,
       is_even: proofData.pathIndices,
       amount: zkField(collateralAmountF),
-      actual_collateralization_ratio: zkField(actualCRF),
       price: zkField(priceF),
       roundId: zkField(roundIdF),
     };
