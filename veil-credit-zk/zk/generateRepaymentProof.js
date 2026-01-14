@@ -1,11 +1,9 @@
-import { Barretenberg, UltraHonkBackend, Fr } from "@aztec/bb.js";
+import { Fr, UltraHonkBackend } from "@aztec/bb.js";
 import { Noir } from "@noir-lang/noir_js";
 import fs from "fs";
 import path from "path";
-import { merkleTree } from "./merkleTree.js";
-function zkField(x) {
-  return new Fr(BigInt(x)).toString();
-}
+
+/* ================= CIRCUIT ================= */
 
 const circuit = JSON.parse(
   fs.readFileSync(
@@ -14,142 +12,109 @@ const circuit = JSON.parse(
   )
 );
 
-async function jsComputeRoot(bb, leaf, path, is_even) {
-  let current = leaf;
-  for (let i = 0; i < path.length; i++) {
-    const sibling = new Fr(BigInt(path[i]));
-    current = is_even[i]
-      ? await bb.poseidon2Hash([current, sibling])
-      : await bb.poseidon2Hash([sibling, current]);
-  }
-  return current;
+/* ================= HELPERS ================= */
+
+function zkField(x) {
+  return new Fr(BigInt(x)).toString();
 }
 
-export async function generateRepaymentProof(params) {
+export async function generateRepaymentProof(
+  params,
+  depositTree,
+  loanTree,
+  repaymentTree,
+  bb
+) {
   const {
     nullifier_deposit,
     secret_deposit,
     withdrawAmount,
     recipient,
-
     tokenId,
     collateralAmount,
-    leaves_deposit,
-    leaves_loan,
-    leaves_repayment,
   } = params;
 
-  const bb = await Barretenberg.new();
+  const noir = new Noir(circuit);
+  const honk = new UltraHonkBackend(circuit.bytecode, { threads: 1 });
 
-  try {
-    console.log("here")
-    const noir = new Noir(circuit);
-    console.log("here")
-    const honk = new UltraHonkBackend(circuit.bytecode, { threads: 1 });
-    console.log("here")
+  /* ---------- FIELD CONVERSION ---------- */
 
-    const nullifierF = new Fr(BigInt(nullifier_deposit));
-    console.log("here")
+  const nullifierF = new Fr(BigInt(nullifier_deposit));
+  const secretF = new Fr(BigInt(secret_deposit));
+  const tokenIdF = new Fr(BigInt(tokenId));
+  const collateralAmountF = new Fr(BigInt(collateralAmount));
+  const withdrawAmountF = new Fr(BigInt(withdrawAmount));
+  const recipientF = new Fr(BigInt(recipient));
 
-    const secretF = new Fr(BigInt(secret_deposit));
-    console.log("here")
+  /* ---------- COMMITMENTS ---------- */
 
-    const tokenIdF = new Fr(BigInt(tokenId));
-    console.log("here")
+  // Deposit commitment
+  const depositCommitment = await bb.poseidon2Hash([
+    nullifierF,
+    secretF,
+    collateralAmountF,
+    tokenIdF,
+  ]);
 
-    const collateralAmountF = new Fr(BigInt(collateralAmount));
-    console.log("here")
+  // Loan commitment
+  const loanCommitment = await bb.poseidon2Hash([
+    depositCommitment,
+  ]);
 
-    const withdrawAmountF = new Fr(BigInt(withdrawAmount));
-    console.log("here")
+  // Repayment commitment
+  const repaymentCommitment = await bb.poseidon2Hash([
+    loanCommitment,
+  ]);
 
-    const recipientF = new Fr(BigInt(recipient));
-    console.log("here")
+  /* ---------- MERKLE PROOFS (GLOBAL TREES) ---------- */
+
+  const depositProof = await depositTree.getProof(
+    depositCommitment.toString()
+  );
+
+  const loanProof = await loanTree.getProof(
+    loanCommitment.toString()
+  );
+
+  const repaymentProof = await repaymentTree.getProof(
+    repaymentCommitment.toString()
+  );
+
+  /* ---------- OPTIONAL SAFETY CHECKS ---------- */
 
 
-    const commitmentDeposit = await bb.poseidon2Hash([
-      nullifierF,
-      secretF,
-      collateralAmountF,
-      tokenIdF,
-    ]);
 
-    const loanCommitment = await bb.poseidon2Hash([commitmentDeposit]);
+  /* ---------- CIRCUIT INPUT ---------- */
 
-    const repaymentCommitment = await bb.poseidon2Hash([loanCommitment]);
+  const input = {
+    root_deposit: depositProof.root,
+    root_loan: loanProof.root,
+    root_repay: repaymentProof.root,
 
-    const depositTree = await merkleTree(leaves_deposit);
-    const loanTree = await merkleTree(leaves_loan);
-    const repaymentTree = await merkleTree(leaves_repayment);
+    withdraw_amount: zkField(withdrawAmountF),
+    recipient: zkField(recipientF),
 
-    const depositProof = depositTree.proof(
-      depositTree.getIndex(commitmentDeposit.toString())
-    );
-    const loanProof = loanTree.proof(
-      loanTree.getIndex(loanCommitment.toString())
-    );
-    const repaymentProof = repaymentTree.proof(
-      repaymentTree.getIndex(repaymentCommitment.toString())
-    );
+    nullifier_d: zkField(nullifierF),
+    secret_d: zkField(secretF),
+    token_id: zkField(tokenIdF),
+    amount: zkField(collateralAmountF),
 
-    const input = {
-      root_deposit: depositProof.root,
-      root_loan: loanProof.root,
-      root_repay: repaymentProof.root,
-      withdraw_amount: zkField(withdrawAmountF),
-      recipient: zkField(recipientF),
-      nullifier_d: zkField(nullifierF),
-      secret_d: zkField(secretF),
-      token_id: zkField(tokenIdF),
-      amount: zkField(collateralAmountF),
-      merkle_proof_deposit: depositProof.pathElements,
-      is_even_deposit: depositProof.pathIndices,
-      merkle_proof_loan: loanProof.pathElements,
-      is_even_loan: loanProof.pathIndices,
-      merkle_proof_repay: repaymentProof.pathElements,
-      is_even_repay: repaymentProof.pathIndices,
-    };
+    merkle_proof_deposit: depositProof.pathElements,
+    is_even_deposit: depositProof.pathIndices,
 
-    const jsRootDeposit = await jsComputeRoot(
-      bb,
-      commitmentDeposit,
-      depositProof.pathElements,
-      depositProof.pathIndices
-    );
+    merkle_proof_loan: loanProof.pathElements,
+    is_even_loan: loanProof.pathIndices,
 
-    const jsRootLoan = await jsComputeRoot(
-      bb,
-      loanCommitment,
-      loanProof.pathElements,
-      loanProof.pathIndices
-    );
+    merkle_proof_repay: repaymentProof.pathElements,
+    is_even_repay: repaymentProof.pathIndices,
+  };
 
-    const jsRootRepay = await jsComputeRoot(
-      bb,
-      repaymentCommitment,
-      repaymentProof.pathElements,
-      repaymentProof.pathIndices
-    );
+  /* ---------- PROVE ---------- */
 
-    if (jsRootDeposit.toString() != depositProof.root) {
-      throw new Error("JS root != public root — proof invalid");
-    }
-    if (jsRootLoan.toString() != loanProof.root) {
-      throw new Error("JS root != public root — proof invalid");
-    }
-    if (jsRootRepay.toString() != repaymentProof.root) {
-      throw new Error("JS root != public root — proof invalid");
-    }
+  const { witness } = await noir.execute(input);
+  const { proof, publicInputs } = await honk.generateProof(witness, {
+    keccakZK: true,
+  });
 
-    const { witness } = await noir.execute(input);
-    const { proof, publicInputs } = await honk.generateProof(witness, {
-      keccakZK: true,
-    });
-    console.log(proof);
-    console.log(publicInputs);
-
-    return { proof, publicInputs };
-  } finally {
-    await bb.destroy();
-  }
+  return { proof, publicInputs };
 }

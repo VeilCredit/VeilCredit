@@ -172,7 +172,18 @@ export default function BorrowPage() {
         { gasLimit: 2_500_0000n }
       );
 
+      
+
       await tx.wait();
+
+      const res = await fetch(`${BACKEND_URL}/loan-confirmed`,{
+        method:"POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          commitment:deposit.loanCommitment
+        })
+      })
+
       router.push("/dashboard");
     } catch (err) {
       console.error(err);

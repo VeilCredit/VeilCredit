@@ -49,6 +49,8 @@ const LENDING_ENGINE_ABI = [
   "function getLoanDetails(bytes32 nullifierHash_) external view returns (tuple(uint256 borrowAmount,uint256 tokenId,uint256 minimumCollateralUsed,uint256 startTime,uint256 userBorrowIndex,bool isLiquidated,bool repaid))",
 ];
 
+const WETH_TOKEN_ID = 0;
+
 const ASSETS = {
   WETH: {
     symbol: "WETH",
@@ -161,6 +163,14 @@ export default function WithdrawPage() {
     }
   }, [isConnected]);
 
+  function removeDepositFromLocalStorage(commitment) {
+    const deposits = JSON.parse(localStorage.getItem("zkDeposits") || "[]");
+
+    const updated = deposits.filter((d) => d.commitment !== commitment);
+
+    localStorage.setItem("zkDeposits", JSON.stringify(updated));
+  }
+
   // Generate Withdrawal Proof
   const handleGenerateProof = async () => {
     if (!selectedCommitment) {
@@ -176,6 +186,7 @@ export default function WithdrawPage() {
       const signer = await provider.getSigner();
 
       const deposit = selectedCommitment.fullDeposit;
+      const collateralAmount = BigInt(deposit.amount);
 
       // Call backend to generate withdrawal proof
       const response = await fetch(`${BACKEND_URL}/generate-repayment-proof`, {
@@ -186,15 +197,11 @@ export default function WithdrawPage() {
           nullifier_deposit: deposit.nullifier,
           secret_deposit: deposit.secret,
 
-          withdrawAmount: deposit.amount, // or partial withdraw later
-          collateralAmount: deposit.amount,
+          withdrawAmount: collateralAmount.toString(), // or partial withdraw later
 
           recipient: await signer.getAddress(),
-          tokenId: deposit.tokenId,
-
-          leaves_deposit: [deposit.commitment],
-          leaves_loan: [deposit.loanCommitment],
-          leaves_repayment: [deposit.repayCommitment],
+          tokenId: WETH_TOKEN_ID,
+          collateralAmount: collateralAmount.toString(),
         }),
       });
 
@@ -290,6 +297,17 @@ export default function WithdrawPage() {
 
       console.log("Withdrawal transaction submitted:", tx.hash);
       await tx.wait();
+
+      removeDepositFromLocalStorage(selectedCommitment.fullDeposit.commitment);
+
+      // Update UI state
+      setWithdrawablePositions((prev) =>
+        prev.filter((pos) => pos.id !== selectedCommitment.id)
+      );
+
+      setSelectedCommitment(null);
+      setProofData(null);
+      setActiveStep(1);
 
       alert(
         `✅ Withdrawal successful!\n\nCollateral: ${selectedCommitment.amount} ${selectedCommitment.asset}\nValue: ${selectedCommitment.value}\n\nYour funds have been released to your wallet.`

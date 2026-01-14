@@ -14,6 +14,7 @@ import {
 import { ethers } from 'ethers'
 
 // ================= CONFIG =================
+const BACKEND_URL = "http://localhost:4000";
 
 const ZK_BACKEND = 'http://localhost:4000/generate-repayment-commitment'
 const LENDING_ENGINE_ADDRESS = '0x959922bE3CAee4b8Cd9a407cc3ac1C251C2007B1'
@@ -142,6 +143,14 @@ const handleSelectLoan = (loan) => {
 
 
       await tx.wait();
+
+      const res = await fetch(`${BACKEND_URL}/repayment-confirmed`,{
+        method:"POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          commitment:selectedLoan.repaymentCommitment
+        })
+      })
       router.push("/withdraw");
     } catch (err) {
       console.error(err);

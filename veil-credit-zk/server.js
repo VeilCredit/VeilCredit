@@ -13,6 +13,8 @@ app.use(express.json());
 // ---- GLOBAL STATE ----
 const bb = await Barretenberg.new();
 const depositTree = new IncrementalMerkleTree(bb);
+const loanTree = new IncrementalMerkleTree(bb);
+const repaymentTree = new IncrementalMerkleTree(bb)
 /**
  * Canonical BN254 field helper
  * This is the ONLY allowed representation boundary
@@ -27,6 +29,22 @@ app.post("/deposit-confirmed", async (req, res) => {
 
   await depositTree.insert(commitment);
   res.json({ root: depositTree.root, success: true });
+});
+
+app.post("/loan-confirmed", async (req, res) => {
+  const { commitment } = req.body;
+  if (!commitment) return res.status(400).send("Missing commitment");
+
+  await loanTree.insert(commitment);
+  res.json({ root: loanTree.root, success: true });
+});
+
+app.post("/repayment-confirmed", async (req, res) => {
+  const { commitment } = req.body;
+  if (!commitment) return res.status(400).send("Missing commitment");
+
+  await repaymentTree.insert(commitment);
+  res.json({ root: repaymentTree.root, success: true });
 });
 
 app.post("/generate-commitment", async (req, res) => {
@@ -132,7 +150,7 @@ app.post("/generate-periodic-proof-of-solvancy", async (req, res) => {
 
 app.post("/generate-repayment-proof", async (req,res) => {
   try{
-    const result = await generateRepaymentProof(req.body);
+    const result = await generateRepaymentProof(req.body,depositTree,loanTree,repaymentTree,bb);
     res.json(result);
   }catch(err){
     console.error(err);
