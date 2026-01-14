@@ -10,6 +10,11 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+const depositLeaves = [];
+const loanLeaves = [];
+const repaymentLeaves = [];
+
+
 // ---- GLOBAL STATE ----
 const bb = await Barretenberg.new();
 const depositTree = new IncrementalMerkleTree(bb);
@@ -23,11 +28,23 @@ function zkField(x) {
   return new Fr(BigInt(x)).toString();
 }
 
+async function buildTreeUpTo(bb, leaves, targetLeaf) {
+  const tree = new IncrementalMerkleTree(bb);
+
+  for (const leaf of leaves) {
+    await tree.insert(leaf);
+    if (leaf === targetLeaf) break;
+  }
+
+  return tree;
+}
+
 app.post("/deposit-confirmed", async (req, res) => {
   const { commitment } = req.body;
   if (!commitment) return res.status(400).send("Missing commitment");
 
   await depositTree.insert(commitment);
+  depositLeaves.push(commitment);
   res.json({ root: depositTree.root, success: true });
 });
 
@@ -36,6 +53,8 @@ app.post("/loan-confirmed", async (req, res) => {
   if (!commitment) return res.status(400).send("Missing commitment");
 
   await loanTree.insert(commitment);
+  loanLeaves.push(commitment);
+
   res.json({ root: loanTree.root, success: true });
 });
 
@@ -44,6 +63,8 @@ app.post("/repayment-confirmed", async (req, res) => {
   if (!commitment) return res.status(400).send("Missing commitment");
 
   await repaymentTree.insert(commitment);
+  repaymentLeaves.push(commitment);
+
   res.json({ root: repaymentTree.root, success: true });
 });
 
@@ -125,7 +146,7 @@ app.post("/generate-commitment", async (req, res) => {
 
 app.post("/generate-borrow-proof", async (req, res) => {
   try {
-    const result = await generateBorrowProof(req.body, depositTree, bb);
+    const result = await generateBorrowProof(req.body, depositLeaves, bb);
     res.json(result);
   } catch (e) {
     console.error(e);
@@ -140,7 +161,7 @@ app.post("/generate-periodic-proof-of-solvancy", async (req, res) => {
      * req.body MUST contain ONLY canonical field strings
      * No bytes. No hex. No Fr reconstruction.
      */
-    const result = await generatePeriodicProofOfSolvancy(req.body,depositTree,bb);
+    const result = await generatePeriodicProofOfSolvancy(req.body,depositLeaves,bb);
     res.json(result);
   } catch (err) {
     console.error(err);
@@ -150,7 +171,7 @@ app.post("/generate-periodic-proof-of-solvancy", async (req, res) => {
 
 app.post("/generate-repayment-proof", async (req,res) => {
   try{
-    const result = await generateRepaymentProof(req.body,depositTree,loanTree,repaymentTree,bb);
+    const result = await generateRepaymentProof(req.body,depositLeaves,loanLeaves,repaymentLeaves,bb);
     res.json(result);
   }catch(err){
     console.error(err);

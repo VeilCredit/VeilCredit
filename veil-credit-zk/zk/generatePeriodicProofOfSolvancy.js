@@ -2,6 +2,7 @@ import { Fr, UltraHonkBackend } from "@aztec/bb.js";
 import { Noir } from "@noir-lang/noir_js";
 import fs from "fs";
 import path from "path";
+import { buildTreeUpTo } from "./treeSnapShot.js";
 
 const circuit = JSON.parse(
   fs.readFileSync(path.resolve("./zk/circuits/circuit_prove_solvancy.json"), "utf8")
@@ -11,7 +12,8 @@ function zkField(x) {
   return new Fr(BigInt(x)).toString();
 }
 
-export async function generatePeriodicProofOfSolvancy(params, depositTree, bb) {
+
+export async function generatePeriodicProofOfSolvancy(params, depositLeaves, bb) {
   const {
     nullifier,
     secret,
@@ -48,8 +50,14 @@ export async function generatePeriodicProofOfSolvancy(params, depositTree, bb) {
   ]);
 
   // ---- Merkle proof from GLOBAL tree ----
-  const proof = await depositTree.getProof(commitmentF.toString());
-
+ const depositSnapshot = await buildTreeUpTo(
+     bb,
+     depositLeaves,
+     commitmentF.toString()
+   );
+ 
+   const proof = await depositSnapshot.getProof(commitmentF.toString());
+ 
   // ---- Circuit input ----
   const input = {
     root: proof.root,

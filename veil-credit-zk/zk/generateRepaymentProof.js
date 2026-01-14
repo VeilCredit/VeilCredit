@@ -2,6 +2,7 @@ import { Fr, UltraHonkBackend } from "@aztec/bb.js";
 import { Noir } from "@noir-lang/noir_js";
 import fs from "fs";
 import path from "path";
+import { buildTreeUpTo } from "./treeSnapShot.js";
 
 /* ================= CIRCUIT ================= */
 
@@ -20,9 +21,9 @@ function zkField(x) {
 
 export async function generateRepaymentProof(
   params,
-  depositTree,
-  loanTree,
-  repaymentTree,
+  depositLeaves,
+  loanLeaves,
+  repaymentLeaves,
   bb
 ) {
   const {
@@ -68,17 +69,32 @@ export async function generateRepaymentProof(
 
   /* ---------- MERKLE PROOFS (GLOBAL TREES) ---------- */
 
-  const depositProof = await depositTree.getProof(
+  const depositSnapshot = await buildTreeUpTo(
+    bb,
+    depositLeaves,
     depositCommitment.toString()
   );
 
-  const loanProof = await loanTree.getProof(
+  const depositProof = await depositSnapshot.getProof(depositCommitment.toString());
+
+
+  const loanSnapshot = await buildTreeUpTo(
+    bb,
+    loanLeaves,
     loanCommitment.toString()
   );
 
-  const repaymentProof = await repaymentTree.getProof(
+  const loanProof = await loanSnapshot.getProof(loanCommitment.toString());
+
+
+  const repaymentSnapshot = await buildTreeUpTo(
+    bb,
+    repaymentLeaves,
     repaymentCommitment.toString()
   );
+
+  const repaymentProof = await repaymentSnapshot.getProof(repaymentCommitment.toString());
+
 
   /* ---------- OPTIONAL SAFETY CHECKS ---------- */
 

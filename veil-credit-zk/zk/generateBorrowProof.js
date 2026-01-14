@@ -2,7 +2,7 @@ import { Fr, UltraHonkBackend } from "@aztec/bb.js";
 import { Noir } from "@noir-lang/noir_js";
 import fs from "fs";
 import path from "path";
-
+import { buildTreeUpTo } from "./treeSnapShot.js";
 const circuit = JSON.parse(
   fs.readFileSync(path.resolve("./zk/circuits/circuits.json"), "utf8")
 );
@@ -11,7 +11,9 @@ function zkField(x) {
   return new Fr(BigInt(x)).toString();
 }
 
-export async function generateBorrowProof(params, depositTree, bb) {
+
+
+export async function generateBorrowProof(params, depositLeaves, bb) {
   const {
     nullifier,
     secret,
@@ -44,13 +46,16 @@ export async function generateBorrowProof(params, depositTree, bb) {
     tokenIdF,
   ]);
 
-  const nullifierHashF = await bb.poseidon2Hash([
-    nullifierF,
-    nullifierF,
-  ]);
+  const nullifierHashF = await bb.poseidon2Hash([nullifierF, nullifierF]);
 
   // ---- Merkle proof from GLOBAL tree ----
-  const proof = await depositTree.getProof(commitmentF.toString());
+  const depositSnapshot = await buildTreeUpTo(
+    bb,
+    depositLeaves,
+    commitmentF.toString()
+  );
+
+  const proof = await depositSnapshot.getProof(commitmentF.toString());
 
   // ---- Circuit input ----
   const input = {
@@ -75,8 +80,9 @@ export async function generateBorrowProof(params, depositTree, bb) {
   };
 
   const { witness } = await noir.execute(input);
-  const { proof: zkProof, publicInputs } =
-    await honk.generateProof(witness, { keccakZK: true });
+  const { proof: zkProof, publicInputs } = await honk.generateProof(witness, {
+    keccakZK: true,
+  });
 
   return { proof: zkProof, publicInputs };
 }
