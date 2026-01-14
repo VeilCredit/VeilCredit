@@ -140,7 +140,6 @@ export default function SolvencyPage() {
             epoch: epoch.toString(),
             roundId: snapshot.roundId.toString(),
             price: snapshot.price.toString(),
-            leaves: [selectedLoan.commitment],
           }),
         }
       );

@@ -122,7 +122,7 @@ app.post("/generate-periodic-proof-of-solvancy", async (req, res) => {
      * req.body MUST contain ONLY canonical field strings
      * No bytes. No hex. No Fr reconstruction.
      */
-    const result = await generatePeriodicProofOfSolvancy(req.body);
+    const result = await generatePeriodicProofOfSolvancy(req.body,depositTree,bb);
     res.json(result);
   } catch (err) {
     console.error(err);
