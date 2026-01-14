@@ -1,14 +1,18 @@
 import express from "express";
 import cors from "cors";
 import { Barretenberg, Fr } from "@aztec/bb.js";
-import { ethers } from "ethers";
+import { IncrementalMerkleTree } from "./zk/incrementalMerkleTree.js";
 import { generateBorrowProof } from "./zk/generateBorrowProof.js";
-import { generateRepaymentProof } from "./zk/generateRepaymentProof.js";
 import { generatePeriodicProofOfSolvancy } from "./zk/generatePeriodicProofOfSolvancy.js";
+import { generateRepaymentProof } from "./zk/generateRepaymentProof.js";
+import {ethers} from "ethers"
 const app = express();
 app.use(cors());
 app.use(express.json());
 
+// ---- GLOBAL STATE ----
+const bb = await Barretenberg.new();
+const depositTree = new IncrementalMerkleTree(bb);
 /**
  * Canonical BN254 field helper
  * This is the ONLY allowed representation boundary
@@ -16,6 +20,14 @@ app.use(express.json());
 function zkField(x) {
   return new Fr(BigInt(x)).toString();
 }
+
+app.post("/deposit-confirmed", async (req, res) => {
+  const { commitment } = req.body;
+  if (!commitment) return res.status(400).send("Missing commitment");
+
+  await depositTree.insert(commitment);
+  res.json({ root: depositTree.root, success: true });
+});
 
 app.post("/generate-commitment", async (req, res) => {
   let bb;
@@ -95,16 +107,11 @@ app.post("/generate-commitment", async (req, res) => {
 
 app.post("/generate-borrow-proof", async (req, res) => {
   try {
-    /**
-     * IMPORTANT:
-     * req.body MUST contain ONLY canonical field strings
-     * No bytes. No hex. No Fr reconstruction.
-     */
-    const result = await generateBorrowProof(req.body);
+    const result = await generateBorrowProof(req.body, depositTree, bb);
     res.json(result);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: err.message });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: e.message });
   }
 });
 

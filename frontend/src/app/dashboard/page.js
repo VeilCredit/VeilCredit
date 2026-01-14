@@ -181,7 +181,7 @@ export default function SolvencyPage() {
       const tx = await engine.verifyCollateralHealth(
         proofData.proofBytes,
         proofData.publicInputs,
-        { gasLimit: 2_500_000 }
+        { gasLimit: 2_500_0000 }
       );
 
       await tx.wait();

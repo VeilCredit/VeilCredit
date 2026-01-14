@@ -15,6 +15,7 @@ import Link from "next/link";
 import { ethers } from "ethers";
 
 /* ==================== CONFIG ==================== */
+const BACKEND_URL = "http://localhost:4000";
 
 // Backend ZK service
 const ZK_BACKEND_URL = "http://localhost:4000/generate-commitment";
@@ -171,6 +172,17 @@ export default function DepositPage() {
       );
 
       await depositTx.wait();
+
+      const res = await fetch(`${BACKEND_URL}/deposit-confirmed`,{
+        method:"POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          commitment:commitment
+        })
+      })
+
+      const data = await res.json()
+      if(!data.success) throw new Error("failed to insert commitment")
 
       setStep(5);
       alert("✅ Private deposit successful");
