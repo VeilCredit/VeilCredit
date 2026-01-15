@@ -33,7 +33,7 @@ import {
 } from "lucide-react";
 
 // Configuration
-const BACKEND_URL = "http://localhost:4000";
+const BACKEND_URL = "https://veilcredit-production.up.railway.app";
 const STEALTH_VAULT_ADDRESS = "0x0EcA16d5136DfEc7bC059Bf2e69dD88828BeCE7F";
 const LENDING_ENGINE_ADDRESS = "0x2B54285c432d48F154EE099B5bE380E873315788";
 

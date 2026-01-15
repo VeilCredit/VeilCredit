@@ -27,8 +27,8 @@ import Link from "next/link";
 import { ethers } from "ethers";
 
 /* ==================== CONFIG ==================== */
-const BACKEND_URL = "http://localhost:4000";
-const ZK_BACKEND_URL = "http://localhost:4000/generate-commitment";
+const BACKEND_URL = "https://veilcredit-production.up.railway.app";
+const ZK_BACKEND_URL = "https://veilcredit-production.up.railway.app/generate-commitment";
 const STEALTH_VAULT_ADDRESS = "0x0EcA16d5136DfEc7bC059Bf2e69dD88828BeCE7F";
 
 const ASSETS = {

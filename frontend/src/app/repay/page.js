@@ -16,7 +16,7 @@ import {
 import { ethers } from 'ethers'
 
 // ================= CONFIG =================
-const BACKEND_URL = "http://localhost:4000"
+const BACKEND_URL = "https://veilcredit-production.up.railway.app"
 const LENDING_ENGINE_ADDRESS = '0x2B54285c432d48F154EE099B5bE380E873315788'
 const USDT_TOKEN_ADDRESS = '0xd64fE23Ec14a27D9B3B2d77aE4F25E48Fab627b7'
 

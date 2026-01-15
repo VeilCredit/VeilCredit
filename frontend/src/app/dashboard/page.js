@@ -28,7 +28,7 @@ import {
 import { motion } from 'framer-motion';
 
 // ================= CONFIG =================
-const BACKEND_URL = "http://localhost:4000";
+const BACKEND_URL = "https://veilcredit-production.up.railway.app";
 const LENDING_ENGINE_ADDRESS = "0x2B54285c432d48F154EE099B5bE380E873315788";
 
 const LENDING_ENGINE_ABI = [
