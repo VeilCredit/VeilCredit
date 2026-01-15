@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
 import { Barretenberg, Fr } from "@aztec/bb.js";
-import { IncrementalMerkleTree } from "./zk/incrementalMerkleTree.js";
+import { IncrementalMerkleTree } from "./zk/IncrementalMerkleTree.js";
 import { generateBorrowProof } from "./zk/generateBorrowProof.js";
 import { generatePeriodicProofOfSolvancy } from "./zk/generatePeriodicProofOfSolvancy.js";
 import { generateRepaymentProof } from "./zk/generateRepaymentProof.js";

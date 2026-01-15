@@ -1,4 +1,4 @@
-import { IncrementalMerkleTree } from "./incrementalMerkleTree.js";
+import { IncrementalMerkleTree } from "./IncrementalMerkleTree.js";
 
 
 export async function buildTreeUpTo(bb, leaves, targetLeaf) {
