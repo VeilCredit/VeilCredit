@@ -1,0 +1,10 @@
+{
+  "services": [
+    {
+      "name": "zk-backend",
+      "rootDirectory": "backend",
+      "buildCommand": "npm install",
+      "startCommand": "npm start"
+    }
+  ]
+}

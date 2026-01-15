@@ -28,6 +28,8 @@ function zkField(x) {
   return new Fr(BigInt(x)).toString();
 }
 
+const PORT = process.env.PORT || 4000;
+
 async function buildTreeUpTo(bb, leaves, targetLeaf) {
   const tree = new IncrementalMerkleTree(bb);
 
@@ -179,6 +181,7 @@ app.post("/generate-repayment-proof", async (req,res) => {
   }
 })
 
-app.listen(4000, () => {
-  console.log("ZK service running at http://localhost:4000");
+
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`ZK service running on port ${PORT}`);
 });
