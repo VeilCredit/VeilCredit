@@ -34,8 +34,8 @@ import {
 
 // Configuration
 const BACKEND_URL = "http://localhost:4000";
-const STEALTH_VAULT_ADDRESS = "0x9A676e781A523b5d0C0e43731313A708CB607508";
-const LENDING_ENGINE_ADDRESS = "0x959922bE3CAee4b8Cd9a407cc3ac1C251C2007B1";
+const STEALTH_VAULT_ADDRESS = "0x0EcA16d5136DfEc7bC059Bf2e69dD88828BeCE7F";
+const LENDING_ENGINE_ADDRESS = "0x2B54285c432d48F154EE099B5bE380E873315788";
 
 const STEALTH_VAULT_ABI = [
   `function withdraw(
@@ -63,7 +63,7 @@ const ASSETS = {
   WETH: {
     symbol: "WETH",
     name: "Wrapped ETH",
-    address: "0x2279B7A0a67DB372996a5FaB50D91eAA73d2eBe6",
+    address: "0xdEAddEaDdeadDEadDEADDEAddEADDEAddead1111",
   },
 };
 
@@ -305,8 +305,8 @@ export default function WithdrawPage() {
 
       // Check if already withdrawn
       const alreadyWithdrawn = await vault.s_nullifierHashes(
-        proofData.publicInputs[3]
-      );
+              ethers.toBeHex(BigInt(deposit.nullifier_hash), 32)
+            );
       if (alreadyWithdrawn) {
         throw new Error("This commitment has already been withdrawn");
       }
@@ -319,7 +319,7 @@ export default function WithdrawPage() {
         proofData.publicInputs[2], // root1 (repayment merkle tree)
         proofData.publicInputs[0], // root2 (deposit merkle tree)
         proofData.publicInputs[1], // root3 (loan merkle tree)
-        proofData.publicInputs[3], // nullifierHash
+        deposit.nullifier_hash, // nullifierHash
         await signer.getAddress(),
         proofData.publicInputs,
         { gasLimit: 2_500_0000n }

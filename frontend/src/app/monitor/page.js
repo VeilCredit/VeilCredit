@@ -6,7 +6,7 @@ import { formatUnits } from 'viem'
 import { motion } from 'framer-motion'
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { config } from '@/lib/wagmi'
+import { config } from '../../lib/config'
 
 import {
   DollarSign,
@@ -22,7 +22,7 @@ import {
 /* ------------------------------------------------------------------ */
 
 const LENDING_ENGINE_ADDRESS =
-  '0xc3e53F4d16Ae77Db1c982e75a937B9f60FE63690'
+  '0x2B54285c432d48F154EE099B5bE380E873315788'
 
 const LENDING_ENGINE_ABI = [
   {

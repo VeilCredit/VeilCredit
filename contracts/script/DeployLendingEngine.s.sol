@@ -32,10 +32,9 @@ contract DeployLendingEngine is Script {
         }
         console.log("price feed code size", size);
 
-        address user = 0x70997970C51812dc3A010C7d01b50e0d17dc79C8;
-        address collateralVerifier = 0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512;
-        address loanRepaymentVerifier = 0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9;
-        address loanHealthVerifier = 0x5FC8d32690cc91D4c39d9d3abcBD16989F875707;
+        address collateralVerifier = 0x71795dA3422c1ECf82EE215A467dF1e8c1A96472;
+        address loanRepaymentVerifier = 0xC7e1bD0fe99286e75a1ed31405C9C33e73BF1E64;
+        address loanHealthVerifier = 0x5d7C1CfD7c9e32f8ea79F79c8d7D62f8b14B90f9;
         StealthVault stealthVault = new StealthVault(
             weth,
             16,
@@ -43,7 +42,6 @@ contract DeployLendingEngine is Script {
             loanRepaymentVerifier,
             address(weth)
         );
-        ERC20Mock(address(weth)).mint(user, 1e18 * 10);
 
         LendingEngine lendingEngine = new LendingEngine(
             address(wethPriceFeedAddress),
@@ -58,7 +56,6 @@ contract DeployLendingEngine is Script {
         );
         stealthVault.setLendingEngine(address(lendingEngine));
         stealthVault.transferOwnership(address(lendingEngine));
-        ERC20Mock(address(usdt)).mint(address(lendingEngine), 1e18 * 100000);
 
         console.log("addreess lendingengine", address(lendingEngine));
         console.log("address stealthvault", address(stealthVault));
@@ -68,6 +65,3 @@ contract DeployLendingEngine is Script {
         vm.stopBroadcast();
     }
 }
-
-// addreess lendingengine 0x9A676e781A523b5d0C0e43731313A708CB607508
-//   address stealthvault 0xA51c1fc2f0D1a1b8494Ed1FE312d7C3a78Ed91C0

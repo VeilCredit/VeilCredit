@@ -17,8 +17,8 @@ import { ethers } from 'ethers'
 
 // ================= CONFIG =================
 const BACKEND_URL = "http://localhost:4000"
-const LENDING_ENGINE_ADDRESS = '0x959922bE3CAee4b8Cd9a407cc3ac1C251C2007B1'
-const USDT_TOKEN_ADDRESS = '0xA51c1fc2f0D1a1b8494Ed1FE312d7C3a78Ed91C0'
+const LENDING_ENGINE_ADDRESS = '0x2B54285c432d48F154EE099B5bE380E873315788'
+const USDT_TOKEN_ADDRESS = '0xd64fE23Ec14a27D9B3B2d77aE4F25E48Fab627b7'
 
 const ERC20_ABI = [
   "function approve(address spender, uint256 amount) external returns (bool)",

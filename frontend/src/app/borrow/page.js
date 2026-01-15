@@ -27,7 +27,7 @@ import { motion } from "framer-motion";
 
 // ---------------- CONFIG ----------------
 const BACKEND_URL = "http://localhost:4000";
-const LENDING_ENGINE_ADDRESS = "0x959922bE3CAee4b8Cd9a407cc3ac1C251C2007B1";
+const LENDING_ENGINE_ADDRESS = "0x2B54285c432d48F154EE099B5bE380E873315788";
 const WETH_TOKEN_ID = 0;
 const MINIMUM_COLLATERIZATION_RATIO = "132";
 
@@ -361,7 +361,7 @@ export default function BorrowPage() {
                 <div className="space-y-6">
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
-                      <label className="text-white text-lg font-medium">Loan Amount (ETH)</label>
+                      <label className="text-white text-lg font-medium">Loan Amount (USDT)</label>
                       <span className="text-sm text-gray-400">Max: Based on hidden collateral</span>
                     </div>
                     
@@ -382,27 +382,12 @@ export default function BorrowPage() {
                             color: 'white'
                           }}
                         >
-                          <span className="font-medium">ETH</span>
+                          <span className="font-medium">USDT</span>
                         </div>
                       </div>
                     </div>
 
-                    {/* Amount Presets */}
-                    <div className="grid grid-cols-3 gap-3">
-                      {["0.5", "1", "2", "3", "5", "10"].map((amount) => (
-                        <button
-                          key={amount}
-                          onClick={() => setLoanAmount(amount)}
-                          className={`py-3 rounded-xl text-center transition-all ${
-                            loanAmount === amount
-                              ? 'bg-gradient-to-r from-[#B86C1B] to-[#D8933B] text-white font-semibold'
-                              : 'bg-black/40 border border-white/10 text-gray-300 hover:border-white/20'
-                          }`}
-                        >
-                          {amount} ETH
-                        </button>
-                      ))}
-                    </div>
+                    
                   </div>
 
                   {/* Collateral Info */}
@@ -424,7 +409,7 @@ export default function BorrowPage() {
                         <div className="flex justify-between items-center">
                           <span className="text-gray-400">Available Collateral</span>
                           <span className="text-white font-medium">
-                            {Number(deposit.amount).toFixed(4)} ETH
+                            {Number(deposit.amount).toFixed(4)/10**18} ETH
                           </span>
                         </div>
                         <div className="flex justify-between items-center">

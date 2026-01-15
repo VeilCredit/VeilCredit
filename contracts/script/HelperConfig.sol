@@ -25,7 +25,7 @@ contract HelperConfig is Script {
         0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80;
 
     constructor() {
-        if (block.chainid == 11_155_111) {
+        if (block.chainid == 5003) {
             activeNetworkConfig = getSepoliaEthConfig();
         } else {
             activeNetworkConfig = getOrCreateAnvilEthConfig();
@@ -38,9 +38,9 @@ contract HelperConfig is Script {
         returns (NetworkConfig memory sepoliaNetworkConfig)
     {
         sepoliaNetworkConfig = NetworkConfig({
-            wethUsdPriceFeed: 0x694AA1769357215DE4FAC081bf1f309aDC325306,
+            wethUsdPriceFeed: 0x9bD31B110C559884c49d1bA3e60C1724F2E336a7,
             wbtcUsdPriceFeed: 0x1b44F3514812d835EB1BDB0acB33d3fA3351Ee43,
-            weth: 0xdd13E55209Fd76AfE204dBda4007C227904f0a81,
+            weth: 0xdEAddEaDdeadDEadDEADDEAddEADDEAddead1111,
             wbtc: 0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063,
             deployerKey: vm.envUint("PRIVATE_KEY")
         });

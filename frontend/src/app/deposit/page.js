@@ -29,14 +29,14 @@ import { ethers } from "ethers";
 /* ==================== CONFIG ==================== */
 const BACKEND_URL = "http://localhost:4000";
 const ZK_BACKEND_URL = "http://localhost:4000/generate-commitment";
-const STEALTH_VAULT_ADDRESS = "0x9A676e781A523b5d0C0e43731313A708CB607508";
+const STEALTH_VAULT_ADDRESS = "0x0EcA16d5136DfEc7bC059Bf2e69dD88828BeCE7F";
 
 const ASSETS = {
   WETH: {
     symbol: "WETH",
     name: "Wrapped ETH",
     tokenId: 0,
-    address: "0x2279B7A0a67DB372996a5FaB50D91eAA73d2eBe6",
+    address: "0xdEAddEaDdeadDEadDEADDEAddEADDEAddead1111",
     apy: "3.2%",
     color: "#B86C1B"
   },

@@ -29,7 +29,7 @@ import { motion } from 'framer-motion';
 
 // ================= CONFIG =================
 const BACKEND_URL = "http://localhost:4000";
-const LENDING_ENGINE_ADDRESS = "0x959922bE3CAee4b8Cd9a407cc3ac1C251C2007B1";
+const LENDING_ENGINE_ADDRESS = "0x2B54285c432d48F154EE099B5bE380E873315788";
 
 const LENDING_ENGINE_ABI = [
   "function verifyCollateralHealth(bytes proof, bytes32[] publicInputs) external",
@@ -387,7 +387,7 @@ export default function SolvencyPage() {
                               <span className="text-sm text-gray-400">Collateral</span>
                             </div>
                             <div className="text-xl font-bold text-white">
-                              {Number(loan.amount).toFixed(4)} {loan.asset}
+                              {Number(loan.amount).toFixed(4)/10**18} {loan.asset}
                             </div>
                           </div>
                           <div className="p-4 rounded-xl bg-black/40 border border-white/10">
@@ -459,7 +459,7 @@ export default function SolvencyPage() {
                         <div className="flex justify-between items-center">
                           <span className="text-gray-400">Borrow Amount</span>
                           <span className="text-white font-medium">
-                            {(Number(selectedLoan.borrowAmount) / 1e18).toFixed(2)} USDC
+                            {(Number(selectedLoan.borrowAmount) / 10**18).toFixed(2)} USDC
                           </span>
                         </div>
                       </div>
@@ -550,7 +550,7 @@ export default function SolvencyPage() {
                     {/* Info Section */}
                     <div className="p-4 rounded-xl bg-black/40 border border-white/10">
                       <div className="flex items-center gap-2 mb-3">
-                        <Info className="w-4 h-4 text-[#B86C1B]" />
+                        <div className="w-4 h-4 text-[#B86C1B]" />
                         <span className="text-sm font-medium text-white">How it works</span>
                       </div>
                       <ul className="space-y-2 text-sm text-gray-400">
