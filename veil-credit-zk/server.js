@@ -70,6 +70,10 @@ app.post("/repayment-confirmed", async (req, res) => {
   res.json({ root: repaymentTree.root, success: true });
 });
 
+app.get("/health", (_req, res) => {
+  res.status(200).send("ok");
+});
+
 app.post("/generate-commitment", async (req, res) => {
   let bb;
 
