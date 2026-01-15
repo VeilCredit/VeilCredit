@@ -1,14 +1,13 @@
 {
-  "name": "veil-credit-zk",
-  "version": "1.0.0",
-  "main": "index.js",
+  "name": "veil-credit-backend",
+  "private": true,
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node server.js"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
+  "engines": {
+    "node": ">=18"
+  },
   "dependencies": {
     "@aztec/bb.js": "^2.1.8",
     "@noir-lang/noir_js": "^1.0.0-beta.16",
